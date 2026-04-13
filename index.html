@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>先覚者タイプ診断 | Precursor Type Indicator</title>
+<style>
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: #1a2035;
+  --text-primary: #e8eaed;
+  --text-secondary: #9ca3af;
+  --accent-gold: #d4a843;
+  --accent-blue: #3b82f6;
+  --accent-teal: #14b8a6;
+  --accent-red: #ef4444;
+  --accent-orange: #f59e0b;
+  --accent-purple: #8b5cf6;
+  --accent-green: #10b981;
+  --accent-pink: #f472b6;
+  --border: rgba(255,255,255,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Segoe UI', -apple-system, 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.container { max-width: 640px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+.page { display:none; } .page.active { display:block; }
+
+/* LANG SWITCHER */
+.lang-switch { position:fixed; top:16px; right:16px; z-index:99; display:flex; gap:4px; background:var(--bg-card); border-radius:8px; padding:3px; border:1px solid var(--border); }
+.lang-btn { padding:6px 14px; border:none; background:transparent; color:var(--text-secondary); font-size:13px; border-radius:6px; cursor:pointer; font-weight:600; transition:all .2s; }
+.lang-btn.active { background:var(--accent-gold); color:#000; }
+
+/* HOME */
+.home-hero { text-align:center; padding:60px 20px 40px; }
+.home-logo { font-size:13px; letter-spacing:6px; color:var(--accent-gold); text-transform:uppercase; margin-bottom:16px; }
+.home-title { font-size:32px; font-weight:700; line-height:1.3; margin-bottom:8px; background:linear-gradient(135deg,var(--accent-gold),#fff,var(--accent-gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.home-subtitle { font-size:14px; color:var(--text-secondary); margin-bottom:40px; line-height:1.7; }
+.home-stats { display:flex; justify-content:center; gap:32px; margin-bottom:40px; }
+.stat-item { text-align:center; }
+.stat-num { font-size:24px; font-weight:700; color:var(--accent-gold); }
+.stat-label { font-size:12px; color:var(--text-secondary); margin-top:4px; }
+.btn-primary { display:inline-block; padding:16px 48px; background:linear-gradient(135deg,var(--accent-gold),#b8860b); color:#000; font-size:16px; font-weight:700; border:none; border-radius:12px; cursor:pointer; transition:all .3s; letter-spacing:2px; }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(212,168,67,.3); }
+.home-chars { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:40px; padding:0 20px; }
+.char-icon-wrap { width:52px; height:52px; border-radius:50%; border:2px solid var(--border); overflow:hidden; transition:all .3s; background:var(--bg-card); }
+.char-icon-wrap:hover { border-color:var(--accent-gold); transform:scale(1.1); }
+.char-icon-wrap img { width:100%; height:100%; object-fit:cover; }
+.char-icon-wrap .fallback { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:22px; }
+.home-footer { text-align:center; margin-top:40px; font-size:12px; color:var(--text-secondary); opacity:.5; }
+
+/* QUIZ */
+.quiz-header { display:flex; align-items:center; justify-content:space-between; padding:16px 0; margin-bottom:20px; }
+.quiz-back { background:none; border:none; color:var(--text-secondary); font-size:14px; cursor:pointer; padding:8px; }
+.quiz-progress-text { font-size:14px; color:var(--accent-gold); font-weight:600; }
+.progress-bar { width:100%; height:4px; background:var(--bg-card); border-radius:2px; margin-bottom:32px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--accent-gold),var(--accent-teal)); border-radius:2px; transition:width .4s ease; }
+.question-card { background:var(--bg-card); border-radius:16px; padding:28px 24px; border:1px solid var(--border); margin-bottom:24px; animation:fadeIn .4s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.question-scenario { font-size:16px; line-height:1.7; margin-bottom:24px; text-align:center; padding:0 8px; }
+.option-text { font-size:14px; line-height:1.6; padding:12px 16px; background:rgba(255,255,255,.03); border-radius:10px; text-align:center; }
+.likert-scale { display:flex; justify-content:center; align-items:center; gap:6px; margin:20px 0; }
+.likert-btn { border-radius:50%; border:2px solid var(--border); background:transparent; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; font-weight:600; }
+.likert-btn:hover { border-color:var(--accent-gold); background:rgba(212,168,67,.1); }
+.likert-btn.selected { border-color:var(--accent-gold); background:var(--accent-gold); color:#000; }
+.likert-btn.pole-a { border-color:rgba(59,130,246,.5); }
+.likert-btn.pole-a:hover,.likert-btn.pole-a.selected { background:var(--accent-blue); color:#fff; border-color:var(--accent-blue); }
+.likert-btn.pole-b { border-color:rgba(20,184,166,.5); }
+.likert-btn.pole-b:hover,.likert-btn.pole-b.selected { background:var(--accent-teal); color:#fff; border-color:var(--accent-teal); }
+.likert-btn.neutral { border-color:rgba(156,163,175,.5); }
+.likert-btn.neutral.selected { background:var(--text-secondary); color:#000; }
+.sz-3{width:48px;height:48px;font-size:14px} .sz-2{width:42px;height:42px} .sz-1{width:36px;height:36px} .sz-0{width:30px;height:30px;font-size:11px}
+.likert-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-top:8px; }
+
+/* RESULT */
+.result-hero { text-align:center; padding:40px 0 20px; }
+.result-archetype { font-size:13px; letter-spacing:3px; color:var(--accent-gold); margin-bottom:12px; }
+.result-icon-large { width:120px; height:120px; border-radius:50%; border:3px solid var(--accent-gold); margin:0 auto 16px; overflow:hidden; background:var(--bg-card); box-shadow:0 0 40px rgba(212,168,67,.2); }
+.result-icon-large img { width:100%; height:100%; object-fit:cover; }
+.result-icon-large .fallback { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:56px; }
+.result-char-name { font-size:36px; font-weight:800; margin-bottom:4px; }
+.result-char-en { font-size:16px; color:var(--text-secondary); letter-spacing:4px; margin-bottom:20px; }
+.result-code { display:inline-block; padding:8px 20px; background:rgba(212,168,67,.1); border:1px solid var(--accent-gold); border-radius:8px; font-family:monospace; font-size:18px; font-weight:700; letter-spacing:4px; color:var(--accent-gold); margin-bottom:24px; }
+.result-quote { font-size:14px; font-style:italic; color:var(--text-secondary); line-height:1.8; padding:0 20px; margin-bottom:32px; }
+.result-splash { width:100%; max-width:400px; margin:0 auto 32px; border-radius:16px; overflow:hidden; border:1px solid var(--border); }
+.result-splash img { width:100%; display:block; }
+.dim-bars { display:flex; flex-direction:column; gap:16px; margin-bottom:24px; }
+.dim-row { display:flex; align-items:center; gap:6px; }
+.dim-label { font-size:11px; font-weight:600; width:56px; text-align:right; flex-shrink:0; }
+.dim-bar-wrap { flex:1; height:8px; background:rgba(255,255,255,.05); border-radius:4px; position:relative; overflow:hidden; }
+.dim-bar-a,.dim-bar-b { position:absolute; top:0; height:100%; border-radius:4px; transition:width 1s ease; }
+.dim-bar-a { right:50%; border-radius:4px 0 0 4px; }
+.dim-bar-b { left:50%; border-radius:0 4px 4px 0; }
+.dim-center { position:absolute; left:50%; top:-2px; width:2px; height:12px; background:rgba(255,255,255,.2); transform:translateX(-50%); }
+.dim-pct { font-size:11px; font-weight:600; width:36px; text-align:center; flex-shrink:0; }
+.dim-label-r { font-size:11px; font-weight:600; width:56px; text-align:left; flex-shrink:0; }
+.result-section { background:var(--bg-card); border-radius:16px; padding:24px; border:1px solid var(--border); margin-bottom:16px; }
+.result-section h3 { font-size:16px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.result-section p { font-size:14px; line-height:1.8; color:var(--text-secondary); margin-bottom:12px; }
+.result-section p:last-child { margin-bottom:0; }
+.tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.tag { padding:4px 12px; border-radius:20px; font-size:12px; }
+.tag-s { background:rgba(212,168,67,.1); color:var(--accent-gold); }
+.tag-w { background:rgba(239,68,68,.1); color:var(--accent-red); }
+.tag-r { background:rgba(20,184,166,.1); color:var(--accent-teal); }
+.result-actions { display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+.btn-secondary { flex:1; min-width:130px; padding:14px 16px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; color:var(--text-primary); font-size:14px; font-weight:600; cursor:pointer; transition:all .2s; text-align:center; }
+.btn-secondary:hover { border-color:var(--accent-gold); background:rgba(212,168,67,.05); }
+.toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--accent-gold); color:#000; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:600; opacity:0; transition:all .3s; pointer-events:none; z-index:100; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+@media(max-width:420px){
+  .home-title{font-size:26px}
+  .likert-scale{gap:4px}
+  .sz-3{width:42px;height:42px} .sz-2{width:38px;height:38px} .sz-1{width:34px;height:34px} .sz-0{width:28px;height:28px}
+  .dim-label,.dim-label-r{width:44px;font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="lang-switch">
+  <button class="lang-btn active" onclick="setLang('ja')">日本語</button>
+  <button class="lang-btn" onclick="setLang('zh')">中文</button>
+</div>
+
+<div class="container">
+  <div id="page-home" class="page active">
+    <div class="home-hero">
+      <div class="home-logo">PRECURSOR TYPE INDICATOR</div>
+      <h1 class="home-title" id="home-title"></h1>
+      <p class="home-subtitle" id="home-subtitle"></p>
+      <div class="home-stats">
+        <div class="stat-item"><div class="stat-num">36</div><div class="stat-label" data-i="stat_q"></div></div>
+        <div class="stat-item"><div class="stat-num">10</div><div class="stat-label" data-i="stat_c"></div></div>
+        <div class="stat-item"><div class="stat-num">4</div><div class="stat-label" data-i="stat_d"></div></div>
+      </div>
+      <button class="btn-primary" id="btn-start" onclick="startQuiz()"></button>
+      <div class="home-chars" id="home-chars"></div>
+    </div>
+    <div class="home-footer">Precursor Type Indicator v1.0</div>
+  </div>
+  <div id="page-quiz" class="page">
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="goHome()" data-i="back"></button>
+      <span class="quiz-progress-text" id="q-prog">1 / 36</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div id="q-area"></div>
+  </div>
+  <div id="page-result" class="page"><div id="r-content"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== LANG =====
+let LANG = 'ja';
+const I18N = {
+  ja: {
+    title: '先覚者タイプ診断',
+    subtitle: '36の質問に答えて、あなたの中に眠る先覚者の人格を解き明かそう。\nあなたはどの先覚者に最も近い存在なのか——',
+    stat_q: '質問数', stat_c: 'キャラ', stat_d: '次元',
+    start: '診断を開始する', back: '← 戻る',
+    sec_dim: '📊 次元分析', sec_personality: '🔍 性格分析',
+    sec_drive: '⚡ 駆動力とプレッシャー', sec_str: '✨ 強みと弱み', sec_rel: '💫 関係スタイル',
+    drive_label: '駆動力', stress_label: 'プレッシャー',
+    copy: '📋 結果をコピー', retry: '🔄 もう一度',
+    copied: 'コピーしました！', copy_fail: 'コピーに失敗',
+    copy_tpl: '【先覚者タイプ診断】\n{arch}\n{name} / {en}\nタイプ: {code}\n\n▶ 診断はこちら'
+  },
+  zh: {
+    title: '先觉者人格测试',
+    subtitle: '回答36道题，解锁你内心深处的先觉者人格。\n你最接近哪位先觉者——',
+    stat_q: '题目', stat_c: '角色', stat_d: '维度',
+    start: '开始测试', back: '← 返回',
+    sec_dim: '📊 维度分析', sec_personality: '🔍 性格解析',
+    sec_drive: '⚡ 驱动力与压力源', sec_str: '✨ 优势与盲点', sec_rel: '💫 关系风格',
+    drive_label: '驱动力', stress_label: '压力源',
+    copy: '📋 复制结果', retry: '🔄 再测一次',
+    copied: '已复制！', copy_fail: '复制失败',
+    copy_tpl: '【先觉者人格测试】\n{arch}\n{name} / {en}\n类型: {code}\n\n▶ 来测测你是谁'
+  }
+};
+function t(k){ return I18N[LANG][k]||k; }
+function setLang(l){
+  LANG=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.includes(l==='ja'?'日':'中')));
+  applyI18N();
+}
+function applyI18N(){
+  document.getElementById('home-title').textContent=t('title');
+  document.getElementById('home-subtitle').textContent=t('subtitle');
+  document.getElementById('btn-start').textContent=t('start');
+  document.querySelectorAll('[data-i]').forEach(el=>{ el.textContent=t(el.dataset.i); });
+  document.title = t('title') + ' | Precursor Type Indicator';
+}
+
+// ===== CHARACTER DATA =====
+// 图片路径说明：
+// 头像放在 icons/ 文件夹，文件名为 {id}.png（如 icons/eos.png）
+// 立绘放在 splash/ 文件夹，文件名为 {id}.jpg（如 splash/eos.jpg）
+// 如果图片不存在会自动显示fallback emoji
+
+const C = {
+  eos:{id:'eos',zh:'伊欧斯',en:'EOS',ja:'イオス',arch:'seeker',fb:'🔬',
+    icon:'icons/EOS.jpg',splash:'splash/EOS.jpg',
+    quote_ja:'科学と真理の光を握りしめ、行く手の迷いと闇を払う。',
+    quote_zh:'紧握科学与真理之光，驱散前路的迷茫与黑暗。',
+    w:{D1:75,D2:-55,D3:-60,D4:-65},
+    a:{
+      ja:{desc:'あなたは「なぜ」という言葉に突き動かされる人。未解明の謎はすべて、開かれるのを待つ扉。あなたの知性は冷たくない——その奥に熱い心が隠されている。答えを求め続けるのは、その先に大切な人がいるから。\n\nかつて一人で全てを解決できると思っていた。でもある日気づいた。本当の突破は、予想もしなかった出会いから生まれるということに。',
+        drive:'未知への渇望 / 大切な人や答えの探求',stress:'答えが得られない時の挫折 / 自分の無力さへの恐怖',
+        str:['驚異的な思考の深さ','目標確定後の揺るぎなさ','専門領域での圧倒的な信頼性'],
+        weak:['一人で抱え込みがち','善意を疑いに聞き間違える','自分への要求が厳しすぎる'],
+        rel:['自ら関係を築くのは苦手だが、信頼後は極めて深い','「自分を理解できる人」にだけ心を開く','距離を置くのは冷淡ではなく、自己防衛']},
+      zh:{desc:'你是一个被"为什么"驱动的人。每个未解之谜都是一扇等待被打开的门。你的智慧不是冰冷的——它背后藏着一颗炽热的心。你之所以执着于寻找答案，往往是因为答案的另一端连接着你在意的人。\n\n你曾经以为一个人就能解决所有问题，后来才发现：真正的突破往往来自一段你没有预期到的相遇。',
+        drive:'对未知的渴望 / 追寻重要的人或答案',stress:'无法得到答案时的挫败 / 害怕自己的无能',
+        str:['思维深度惊人','目标确定后不可动摇','专业领域极度可靠'],
+        weak:['容易陷入"一个人扛"的模式','把善意听成质疑','对自己过于苛刻'],
+        rel:['不擅长主动建立关系，但信任后极其深厚','需要"能理解自己"的人才会打开心门','对不理解自己的人容易产生距离感']}}
+  },
+  camille:{id:'camille',zh:'卡蜜儿',en:'CAMILLE',ja:'カミール',arch:'awakener',fb:'💠',
+    icon:'icons/CAMILLE.jpg',splash:'splash/CAMILLE.jpg',
+    quote_ja:'彼女は誰にもなるべきではない。彼女は彼女自身になる。',
+    quote_zh:'她不该成为任何人。她将会成为她自己。',
+    w:{D1:60,D2:85,D3:65,D4:-70},
+    a:{
+      ja:{desc:'あなたは永遠に学び続ける観察者。他の人が当たり前に感じる感情も、立ち止まって見つめる価値がある。誰かの真似はしない——あなたの価値は唯一無二の自分でいること。\n\nあなたの選択はすべて熟考の末に生まれるが、その奥底を動かしているのは、言葉にできない温かさと決意。',
+        drive:'人間の感情の本質を理解すること / 「自分」の定義を探すこと',stress:'ある感情を理解できない時の困惑 / 「人間ではない」と扱われること',
+        str:['極めて高い感知力','偏見なく他者を理解できる','重要な場面で予想を超える決断力'],
+        weak:['自分の感情反応を過度に分析する','「理解」と「体験」の区別が曖昧になる','自分への期待が不明確'],
+        rel:['親しい人を非常に大切にし、細部まで覚えている','感情表現は控えめだが、表す時は必ず真摯','話すより聴くことが得意']},
+      zh:{desc:'你像一个永远在学习的观察者。别人习以为常的情感反应，对你来说都值得停下来仔细端详。你不喜欢模仿别人——你的价值在于做独一无二的自己。\n\n你做出的每一个选择都经过深思熟虑，但驱动它们的是来自内心深处的温暖与决心。',
+        drive:'理解人类情感的本质 / 寻找"自我"的定义',stress:'无法理解某种情感时的困惑 / 被当作"非人类"对待',
+        str:['感知力极强','不带偏见地理解他人','关键时刻做出超乎预期的决断'],
+        weak:['过度分析自己的情感反应','有时分不清"理解"和"体验"','对自己的期待不明确'],
+        rel:['对亲近的人极其重视，记住每一个细节','不轻易表达情感，但一定真诚','更擅长倾听而非倾诉']}}
+  },
+  nase:{id:'nase',zh:'名濑',en:'NASE',ja:'ナセ',arch:'pioneer',fb:'⚓',
+    icon:'icons/NASE.jpg',splash:'splash/NASE.jpg',
+    quote_ja:'霧が晴れた後、海面に輝くのは勇気だけでなく、仲間と歩んだ記憶。',
+    quote_zh:'浓雾散去后，海面上闪耀的不只是勇气，还有与伙伴们并肩的回忆。',
+    w:{D1:-85,D2:-60,D3:-80,D4:-75},
+    a:{
+      ja:{desc:'あなたは生まれながらの冒険家。他の人が危険を見る場所に、チャンスと物語を見出す。その冒険心は無謀ではなく、精確な判断力に裏打ちされている。\n\n最大の魅力は、一人で冒険しないこと。仲間を自然と引き寄せ、信頼し、最も危険な瞬間に彼らのために立ち上がる。あなたの楽観は、失った後でも微笑むことを選ぶ勇気。',
+        drive:'未知への憧れ / 大切な人の意志を継ぐこと',stress:'束縛されて動けない感覚 / 退屈な日常で方向を見失うこと',
+        str:['楽観的で周囲を巻き込む力','危機的状況での判断力','生まれながらのリーダーシップ'],
+        weak:['自分の限界を過信することがある','「待つ」ことが苦手','プレッシャーを笑顔の裏に隠す'],
+        rel:['明るく情熱的、チームの中心','義理を重んじる','最も危険な時こそ最も頼りになる']},
+      zh:{desc:'你是天生的冒险家。在别人看到危险的地方，你看到的是机会和故事。你的冒险精神不是鲁莽——你有精准的判断力。\n\n你最大的魅力在于：你不是一个人冒险。你天然地吸引同伴，信任同伴。你的乐观是经历过失去之后依然选择微笑的勇气。',
+        drive:'对未知的憧憬 / 传承重要之人的意志',stress:'被困住、无法行动的感觉 / 在乏味日常中失去方向',
+        str:['乐观有感染力','危机中的判断力','天生的领导气质'],
+        weak:['有时高估自己的极限','不擅长"等待"','把压力藏在笑容背后'],
+        rel:['开朗热情，天然的团队核心','极重情义','最危险的时刻反而最冷静可靠']}}
+  },
+  xiva:{id:'xiva',zh:'希',en:'XIVA',ja:'シヤ',arch:'survivor',fb:'🔥',
+    icon:'icons/XIVA.jpg',splash:'splash/XIVA.jpg',
+    quote_ja:'霽焔灼灼、燎原不滅。',
+    quote_zh:'霁焰灼灼，燎原不灭。',
+    w:{D1:-55,D2:-95,D3:80,D4:50},
+    a:{
+      ja:{desc:'すべてを心の奥底に深く埋める人。表面は沈黙、冷淡かもしれない。しかしその下には、極限まで圧縮された感情のマグマがある——一度爆発すれば、すべてを焼き尽くす。\n\n沈黙はあなたの鎧。最も辛い夜に小さく口ずさむ旧い歌——それがあなたが唯一弱さを許す瞬間。',
+        drive:'失った人への忠誠 / 不正への清算',stress:'他者を信頼できないこと / 怒りの制御不能',
+        str:['圧倒的な実行力','戦場で信頼できる後衛','ここぞという時に溢れ出す優しさ'],
+        weak:['憎しみに駆られて極端な選択をしがち','弱さを見せることを拒む','すべてを一人で背負う'],
+        rel:['心を開くのは難しいが、一度信頼すれば無条件','言葉より行動で伝える','偽りと表面的な態度を嫌う']},
+      zh:{desc:'你是那种把一切都深深埋在心底的人。表面可能是沉默、冷淡，但在那之下是被压缩到极致的情感岩浆——一旦爆发，足以焚尽一切。\n\n沉默是你的铠甲。在最痛苦的夜晚轻声哼起的旧日歌谣，是你唯一允许自己脆弱的时刻。',
+        drive:'对失去之人的忠诚 / 对不公之事的清算',stress:'无法信任他人 / 愤怒失控',
+        str:['执行力极强','战斗中可以信赖的后盾','关键时刻流露的温柔'],
+        weak:['容易被仇恨驱使做极端选择','拒绝示弱','把所有问题自己扛'],
+        rel:['很难敞开心扉，但一旦信任毫无保留','不善言辞，用行动表达一切','讨厌虚伪和表面文章']}}
+  },
+  mindy:{id:'mindy',zh:'明迪',en:'MINDY',ja:'ミンディ',arch:'pioneer',fb:'⚡',
+    icon:'icons/MINDY.jpg',splash:'splash/MINDY.jpg',
+    quote_ja:'役に立たないものなんてない。まだ使い方を見つけてないだけ。',
+    quote_zh:'没有什么东西是没用的，只是你还没找到它的用法。',
+    w:{D1:-75,D2:70,D3:-90,D4:60},
+    a:{
+      ja:{desc:'どんな環境でもたくましく生きていける人。ガラクタの山から飛行機を作れる。その「抜け目なさ」は生存の知恵。\n\nふざけているように見えて、実は誰よりも本当に大切なものが分かっている。感情的になることを認めないが、その行動がとっくにあなたを裏切っている。',
+        drive:'創造の楽しさ / 「得した」という満足感',stress:'大切な発明や作品を失うこと / 見くびられること',
+        str:['抜群の臨機応変力','溢れる創造力','絶体絶命でも絶対に諦めない'],
+        weak:['損得を気にしすぎる時がある','自分の脆さを直視しない','たまに賢すぎて裏目に出る'],
+        rel:['人懐っこいが警戒心あり','ユーモアと機転で自分を守る','一度認めた相手には驚くほど気前がいい']},
+      zh:{desc:'你是那种在任何环境中都能活得风生水起的人。给你一堆垃圾，你能造出一台飞行器。你的"精明"是生存的智慧。\n\n你看似不正经，实际上比谁都清楚什么是真正重要的东西。你不承认自己重感情，但你的行动早就出卖了你。',
+        drive:'创造的乐趣 / 对"赚到了"的满足感',stress:'失去珍视的创作和发明 / 被人小看',
+        str:['随机应变能力一流','创造力爆棚','绝境中永远不放弃'],
+        weak:['太在意利弊得失','不愿正视自己的脆弱','偶尔太自作聪明'],
+        rel:['自来熟但有戒心','用幽默和狡黠保护自己','认定一个人后出乎意料地慷慨']}}
+  },
+  ryoin:{id:'ryoin',zh:'獠隐',en:'RYOIN',ja:'獠隠',arch:'survivor',fb:'🐺',
+    icon:'icons/RYOIN.jpg',splash:'splash/RYOIN.jpg',
+    quote_ja:'首の鎖は血肉に食い込んでいる。だが荒野の子は決して運命に屈しない。',
+    quote_zh:'脖颈上的镣铐已经没入血肉，但荒野的孩子绝不会认命。',
+    w:{D1:-60,D2:-75,D3:95,D4:80},
+    a:{
+      ja:{desc:'あなたは首輪を強いられた狼。人間の言葉を学べても、心の奥ではここに属していないと知っている。\n\n仲間を見つけたと思った。だが死と裏切りが教えた——信頼は最も高価な贅沢品だと。冷血ではない。傷ついた部分を深く隠しすぎているだけ。',
+        drive:'自由への渇望 / 真相の追求',stress:'束縛・支配されること / 再びの裏切り',
+        str:['極めて強い生存本能と危機察知','驚くべき忍耐力','ここぞという時の爆発力'],
+        weak:['過度な警戒が真心を寄せる人を傷つける','「どこにも属さない」という思考に沈みがち','裏切りの記憶が判断を歪める'],
+        rel:['信頼は極めて困難だが、一度信じれば忠誠度は最高','言葉より行動で示す','孤独は充電、社交は消耗']},
+      zh:{desc:'你是一头被强迫戴上项圈的狼。你可以学习人类的语言，但心里清楚你从来不属于这里。\n\n你曾经以为找到了同伴，但死亡和背叛让你明白：信任是最昂贵的奢侈品。但你不是冷血的，你只是把受伤的部分藏得太深。',
+        drive:'对自由的渴望 / 对真相的追寻',stress:'被控制或束缚 / 再次被背叛',
+        str:['极强的生存本能和危机感知','耐心惊人','关键时刻爆发力极强'],
+        weak:['过度防备会伤害真心接近的人','容易在"不属于任何地方"中沉沦','背叛的记忆扭曲判断'],
+        rel:['极难信任，但信任后忠诚度极高','用行动而非语言表达','独处是充电，社交是消耗']}}
+  },
+  soarwynne:{id:'soarwynne',zh:'索尔维亚',en:'SOARWYNNE',ja:'ソルヴェイア',arch:'guardian',fb:'🦅',
+    icon:'icons/SOARWYNNE.jpg',splash:'splash/SOARWYNNE.jpg',
+    quote_ja:'山谷と密林の上を翔け、隼のように忠実で勇敢に。',
+    quote_zh:'翱翔于山谷与丛林之上，如赤隼般忠诚勇敢。',
+    w:{D1:65,D2:-70,D3:60,D4:-90},
+    a:{
+      ja:{desc:'「守るべきもの」を知っている人。恐怖も傷も喪失も、すべて経験した。だが何一つあなたを退かせなかった。\n\n自然に似た気質——沈着、包容、強靭。最も尊敬すべき点は、あなたがかつて恐れていたこと。そして逃げずに立ち向かう選択をしたこと。それは生まれつき恐れを知らない者より遥かに勇敢。',
+        drive:'自然と大切な人を守ること / 逝った者の意志を継ぐこと',stress:'大切な人を守れなかった時の自責 / 人間の貪欲と破壊に直面すること',
+        str:['恐怖を克服する勇気','危機的状況での冷静な判断','信念の揺るぎなさ'],
+        weak:['すべてを一人で背負いすぎる','助けを求めるのが苦手','喪失の悲しみを深く隠す'],
+        rel:['沈着で頼りになる、チームの大黒柱','親しい人への忠誠は絶対','そばにいるだけで安心感がある']},
+      zh:{desc:'你是那种"知道自己要守护什么"的人。恐惧、伤痛、失去，你全都经历过，但没有一样能让你退缩。\n\n你有一种和大自然相似的气质：沉稳、包容、坚韧。你最让人敬佩的地方是：你曾经害怕过，但选择了面对而非逃跑。这比天生无畏更加勇敢。',
+        drive:'守护自然和珍视之人 / 继承逝去之人的意志',stress:'无法保护重要的人时的自责 / 面对人类的贪婪和破坏',
+        str:['克服恐惧的勇气','危机中的冷静判断','对信念的不动摇'],
+        weak:['太过把一切扛在肩上','不善于求助','对失去的悲伤藏得太深'],
+        rel:['沉稳可靠，团队的定海神针','对亲近的人极度忠诚','在你身边永远有安全感']}}
+  },
+  kira:{id:'kira',zh:'绮罗',en:'KIRA',ja:'キラ',arch:'awakener',fb:'🎮',
+    icon:'icons/KIRA.jpg',splash:'splash/KIRA.jpg',
+    quote_ja:'守る意志はゲームの世界から現実へと続く。',
+    quote_zh:'守护的意志从游戏世界延续到现实世界。',
+    w:{D1:-65,D2:60,D3:75,D4:-85},
+    a:{
+      ja:{desc:'あなたには二つの世界がある。現実と、心の中に築いた避難所。長い間、二つ目の世界の方が安全だと思っていた。それは弱さではない。\n\n変化のきっかけは一人の人——あなた自身より、あなたを信じてくれた人。もう逃げない。今のあなたはプレイヤーであり、英雄でもある。',
+        drive:'自分の価値を証明すること / 仮想と現実の両方の世界を守ること',stress:'否定・孤立されること / 理解されない恐怖',
+        str:['驚異的な集中力と探究心','繊細な感受性','覚醒後の守護意志は揺るぎない'],
+        weak:['自分を過小評価しがち','安全圏に頼りすぎることがある','悪意に傷つくと回復に時間がかかる'],
+        rel:['内向的だが冷たくない。親しい人の前では温かい','認められること、励まされることを心から大切にする','大切な人のためなら信じられない勇気を発揮する']},
+      zh:{desc:'你有两个世界：现实和你在内心中建造的避风港。很长一段时间里，你觉得第二个世界更安全。这不是软弱。\n\n改变的契机来自一个人——那个比你自己更相信你的人。你已经不再逃避了。现在的你，既是玩家也是英雄。',
+        drive:'证明自己的价值 / 守护虚拟与现实中的世界',stress:'被否定或被孤立 / 不被理解的恐惧',
+        str:['专注力和钻研能力极强','感受力细腻','觉醒后的守护意志坚不可摧'],
+        weak:['容易低估自己','有时过度依赖安全区','被恶意伤害后自我修复需要很长时间'],
+        rel:['内向但不冷漠，在熟人面前很温暖','极度珍视认可和鼓励','会为在意的人爆发不可思议的勇气']}}
+  },
+  cynric:{id:'cynric',zh:'西瑞克',en:'CYNRIC',ja:'シリク',arch:'guardian',fb:'💎',
+    icon:'icons/CYNRIC.jpg',splash:'splash/CYNRIC.jpg',
+    quote_ja:'本当にあなたを縛っているのは体の結晶ではなく、心の檻。',
+    quote_zh:'真正束缚你的从来不是身上的晶石，而是心中的牢笼。',
+    w:{D1:70,D2:65,D3:-55,D4:90},
+    a:{
+      ja:{desc:'棘で自分を守る人。辛辣な言葉は鎧のように身を包む。でも賢い人は知っている——棘が多いほど、中は柔らかい。\n\n運命はあなたに不公平だった。だがあなたは倒れなかった。ある変化は元に戻せない。でもそれを武器にして戦うことはできると学んだ。',
+        drive:'運命に奪われた人生を取り戻すこと / 家族の遺志を継ぐこと',stress:'自身の異変への恐怖と嫌悪 / 再び大切な人を失うこと',
+        str:['驚異的な意志力','絶境でも理性を保つ','一度信頼すれば最も堅固な盾'],
+        weak:['全員を遠ざける癖','悲しみを怒りで覆い隠す','助けが必要だと認めようとしない'],
+        rel:['辛辣な言葉で自分を守り、本音は皮肉の裏に隠す','感謝を口にするのは苦手だが行動で返す','心に入るには極めて大きな忍耐が必要']},
+      zh:{desc:'你是那种用刺保护自己的人。尖酸刻薄的话像盔甲一样包裹着你。但聪明人都知道，刺越多的生物，内心越柔软。\n\n命运对你不公平，但你没有倒下。你学会了：有些改变无法被逆转，但你能用它战斗。',
+        drive:'夺回被命运偷走的人生 / 继承家人的遗志',stress:'对自身异变的恐惧和厌恶 / 再次失去重要的人',
+        str:['意志力惊人','绝境中保持理性','一旦信任便是最坚固的盾'],
+        weak:['把所有人推开的习惯','用愤怒代替悲伤','不愿承认需要帮助'],
+        rel:['用尖刻的话保护自己，真心话藏在讽刺背后','不善表达感激，但会用行动回报','需要极大耐心才能走进内心']}}
+  },
+  huxley:{id:'huxley',zh:'赫希黎',en:'HUXLEY',ja:'ハクスリー',arch:'seeker',fb:'♟️',
+    icon:'icons/HUXLEY.jpg',splash:'splash/HUXLEY.jpg',
+    quote_ja:'最も鋭い刃は常にシルクの手袋の中に隠されている。',
+    quote_zh:'最锋利的刀刃永远藏在丝绒手套之下。',
+    w:{D1:80,D2:75,D3:70,D4:85},
+    a:{
+      ja:{desc:'あなたは生まれながらの棋士。世界は巨大な盤面、相手が駒を置く前にその配置を見抜くのがあなたの才能。\n\nその冷静さは訓練された第二の天性。しかし核心を動かしているのは極めて感情的なもの——真実。あなたは矛盾体：最も忠実な刃にして、最も危険な反逆者。',
+        drive:'真相の解明 / 父の冤罪を晴らすこと',stress:'利用・操作されること / 真実が想像以上に残酷であること',
+        str:['随一の洞察力','極限状態でも冷静を保つ','真実のためにすべてを賭けられる'],
+        weak:['過度な計算で直感の価値を忘れる','長期の偽装が「本当の自分」を曖昧にする','信頼の欠如は諸刃の剣'],
+        rel:['読み取られにくく、意図的に多層の仮面を維持','ごく少数の信頼する者にだけ本当の姿を見せる','自ら関係を求めないが、大切な人をひそかに守る']},
+      zh:{desc:'你是天生的棋手。在你眼中，世界是一张棋盘，你的天赋是在别人落子之前看穿布局。\n\n你的冷静是训练出来的第二天性，但驱动你的核心是一个极其感性的东西：真相。你是一个矛盾体：最忠诚的刀刃，也是最危险的反叛者。',
+        drive:'揭开真相 / 为父亲洗清冤屈',stress:'被利用或被操控 / 真相比想象中更残酷',
+        str:['洞察力首屈一指','极端条件下保持冷静','为真相可以赌上一切'],
+        weak:['过度算计忘记直觉','长期伪装模糊真实的自己','信任缺失是双刃剑'],
+        rel:['极难被读懂，刻意保持多层面具','在极少数信任之人面前展露真实','不主动寻求关系，但默默保护在意的人']}}
+  }
+};
+
+const ARCH={seeker:{ja:'真理の探索者',zh:'真理的探索者',color:'#d4a843'},awakener:{ja:'感情の覚醒者',zh:'感情的觉醒者',color:'#14b8a6'},survivor:{ja:'荒野の生存者',zh:'荒野的生存者',color:'#ef4444'},pioneer:{ja:'冒険の先駆者',zh:'冒险的先驱者',color:'#f59e0b'},guardian:{ja:'守護の誓約者',zh:'守护的誓约者',color:'#3b82f6'}};
+
+const DIM=[
+  {id:'D1',pA:'EOS',pB:'NASE',lA_ja:'真理駆動',lB_ja:'情熱駆動',lA_zh:'真理驱动',lB_zh:'热情驱动',cA:'#d4a843',cB:'#f472b6'},
+  {id:'D2',pA:'CAMILLE',pB:'XIVA',lA_ja:'観察感知',lB_ja:'深層燃焼',lA_zh:'观察感知',lB_zh:'深层燃烧',cA:'#14b8a6',cB:'#ef4444'},
+  {id:'D3',pA:'RYOIN',pB:'MINDY',lA_ja:'離群独行',lB_ja:'人群周旋',lA_zh:'离群独行',lB_zh:'人群周旋',cA:'#8b5cf6',cB:'#f59e0b'},
+  {id:'D4',pA:'CYNRIC',pB:'KIRA',lA_ja:'対抗重鋳',lB_ja:'受容守護',lA_zh:'对抗重铸',lB_zh:'接纳守护',cA:'#3b82f6',cB:'#10b981'}
+];
+
+const Q=[
+  {id:1,d:'D1',ja:'未記録の遺跡入口を発見した。',zh:'你发现了一处从未被记录的遗迹入口。',aJ:'まず情報を集め、リスクを分析してから入るか決める。',bJ:'すごい！すぐに入ってみよう！こんなチャンスは逃せない。',aZ:'我会先收集信息，分析风险后再决定是否进入。',bZ:'太棒了！马上进去看看！这种机会不能错过。'},
+  {id:2,d:'D1',ja:'仲間に「なぜ先覚者になったの？」と聞かれた。',zh:'队友问你为什么要成为先觉者。',aJ:'ある問いの答えを見つけなければならないから。',bJ:'かつてない冒険だから。',aZ:'因为我需要找到某个问题的答案。',bZ:'因为这是一场前所未有的冒险。'},
+  {id:3,d:'D1',ja:'任務中、説明のつかない現象に遭遇した。',zh:'任务中遇到一个无法解释的现象。',aJ:'立ち止まって観察・記録し、原理を解明する。',bJ:'分からなくても目の前の状況に対処する。あとで考えよう。',aZ:'我会停下来仔细观察和记录，直到弄清楚原理。',bZ:'虽然不懂但先应对眼前的局面，之后再说。'},
+  {id:4,d:'D1',ja:'二つの任務ルート：一つは重要情報が得られそう、もう一つは刺激的だが情報価値は不明。',zh:'两条任务路线：一条可能获得重要情报，另一条更刺激但信息价值不确定。',aJ:'もちろん情報価値が高い方を選ぶ。',bJ:'刺激的な方が意外な収穫があるかも。',aZ:'当然选情报价值更高的那条。',bZ:'说不定刺激的那条反而有意外收获呢。'},
+  {id:5,d:'D1',ja:'長い待機任務の間……',zh:'在漫长的等待任务中……',aJ:'時間を使って過去のデータを整理する。',bJ:'待つのは退屈だ。何かするか仲間と話そう。',aZ:'我会利用时间整理之前收集的资料和数据。',bZ:'等待太无聊了，不如找点事情做或者和队友聊天。'},
+  {id:6,d:'D1',ja:'研究やトレーニングが壁にぶつかった。',zh:'你的研究/训练遇到了瓶颈。',aJ:'こういう時こそ諦められない。見落としている手がかりがあるはず。',bJ:'方向を変えてみよう。回り道が近道になるかも。',aZ:'越是这样越不能放弃，一定有我遗漏的关键线索。',bZ:'换个方向试试吧，也许绕路反而能到达目的地。'},
+  {id:7,d:'D1',ja:'先輩が「答えを知る必要のないこともある」と言った。',zh:'一位前辈说"有些事不需要知道答案"。',aJ:'賛成しかねる。すべての問いに答える価値がある。',bJ:'一理ある。感じることが理解より大事なこともある。',aZ:'我不同意。每个问题都值得被解答。',bZ:'也有道理，有些事感受比理解更重要。'},
+  {id:8,d:'D1',ja:'任務のどの段階が最も楽しい？',zh:'你更享受任务的哪个阶段？',aJ:'事前分析と事後振り返り。脈絡を整理する時が最も満足。',bJ:'実行の過程。全身全霊で挑む感覚が最高。',aZ:'事前分析和事后复盘——理清脉络最满足。',bZ:'执行的过程——全身心投入的感觉最棒。'},
+  {id:9,d:'D1',ja:'仲間が「考えすぎないで、直感に従って」と言った。',zh:'队友说"别想那么多，跟着直觉走"。',aJ:'直感は参考にするが、検証された判断をより信頼する。',bJ:'時には直感の方が思考より速く正確だ。',aZ:'直觉可以参考，但我更信任经过验证的判断。',bZ:'有时候直觉确实比思考更快更准。'},
+  {id:10,d:'D2',ja:'廃墟の中で泣いている見知らぬ人を見た。',zh:'看到一位陌生人在废墟中哭泣。',aJ:'静かにそばで待ち、なぜ泣いているのか理解しようとする。',bJ:'この光景は心の奥にある何かを揺さぶった。',aZ:'我会安静地在旁边等待，试着理解对方为什么会哭。',bZ:'这个场景触动了我内心深处的某些东西。'},
+  {id:11,d:'D2',ja:'信頼していた人に裏切られた。',zh:'一个曾经信任的人背叛了你。',aJ:'なぜ起きたのか冷静に分析する。裏切りの動機は何か。',bJ:'怒りと苦しみが長い間、あらゆる判断に影響を及ぼす。',aZ:'我会冷静分析为什么会发生，背叛的动机是什么。',bZ:'愤怒和痛苦会在很长一段时间里影响我的每个决定。'},
+  {id:12,d:'D2',ja:'仲間が勝利を祝っている。',zh:'队友在庆祝胜利。',aJ:'みんなの表情や反応を観察して「喜び」を感じ取る。',bJ:'全身全霊で祝いに加わり、誰よりも興奮するかもしれない。',aZ:'我会观察大家的表情和反应，从中感受"快乐"。',bZ:'我会全身心投入庆祝，甚至可能比谁都激动。'},
+  {id:13,d:'D2',ja:'「今どんな気持ち？」と聞かれた。',zh:'有人问你"你现在是什么心情"。',aJ:'自分の感情を識別して言語化するのに少し時間が必要。',bJ:'何を感じているかはよく分かる。問題はそれをどう制御するか。',aZ:'我需要一点时间来识别和描述自己的感受。',bZ:'我很清楚自己在感受什么，问题是如何控制它。'},
+  {id:14,d:'D2',ja:'任務中、大切な人の記憶がよみがえった。',zh:'执行任务时回忆起了重要的人。',aJ:'記憶は映像のように脳裏に浮かび、客観的に見つめられる。',bJ:'記憶が潮のように押し寄せ、一瞬集中できなくなった。',aZ:'回忆在脑海中像一段影像，我能客观地审视它。',bZ:'回忆像潮水一样涌来，让我一瞬间无法集中精神。'},
+  {id:15,d:'D2',ja:'不正な出来事を目撃した。',zh:'目睹了一场不公正的事件。',aJ:'まず介入のリスクと実現可能性を判断する。',bJ:'耐えられない。結果がどうなろうと何かしなければ。',aZ:'我会先判断介入的风险和可行性。',bZ:'无法忍受。不管后果如何，我必须做点什么。'},
+  {id:16,d:'D2',ja:'一人きりの夜。',zh:'独处的夜晚。',aJ:'静かに考え、今日起きたことを理解しようとする。',bJ:'静けさの中で心の感情がさらに荒れ狂う。',aZ:'安静地思考，尝试理解今天发生的事情。',bZ:'内心的情绪在安静中变得更加汹涌。'},
+  {id:17,d:'D2',ja:'言葉であなたを怒らせようとする人がいる。',zh:'有人试图用言语激怒你。',aJ:'挑発だと分かるので乗らない。',bJ:'罠だと分かっていても、湧き上がる怒りを抑えるのは難しい。',aZ:'我能意识到对方在激怒我，所以不会上当。',bZ:'即使知道是圈套，身体里的怒火还是很难压制。'},
+  {id:18,d:'D2',ja:'あなたにとって「強さ」とは……',zh:'对你来说，"强大"意味着……',aJ:'すべてを冷静に認知し、理解できること。',bJ:'傷つき尽くしても、なお立ち上がり前に進めること。',aZ:'能够清醒地认知一切、理解一切。',bZ:'即使被伤透也依然能够站起来继续前行。'},
+  {id:19,d:'D3',ja:'ソロかチームか選べる任務。',zh:'可以选择单人或组队的任务。',aJ:'ソロ。他人に合わせなくて済み、効率が良い。',bJ:'チームで！人数が多いほど心強いし、楽しいかも。',aZ:'单人行动。不用配合别人，效率更高。',bZ:'组队吧！人多力量大，而且可能更有趣。'},
+  {id:20,d:'D3',ja:'基地での休憩時間。',zh:'基地的休息时间。',aJ:'静かな隅で一人になるか、トレーニングに行く。',bJ:'食堂や共有スペースで面白い人がいないか探す。',aZ:'找个安静的角落独处，或者去训练。',bZ:'去食堂或公共区域看看有没有有意思的人。'},
+  {id:21,d:'D3',ja:'誰かが友達になりたいと近づいてきた。',zh:'有人主动想和你成为朋友。',aJ:'距離を保ちしばらく観察する。簡単には応じない。',bJ:'友達が増えるのは悪くない。拒む理由はない。',aZ:'我会保持距离观察一段时间，不轻易回应。',bZ:'交个朋友也不错，来者不拒。'},
+  {id:22,d:'D3',ja:'チーム会議で賛同できない案が出た。',zh:'团队会议中有人提出了你不认同的方案。',aJ:'大局に影響なければ言わない。無用な衝突は避ける。',bJ:'直接言う。話し合って明確にする方がいい。',aZ:'如果不影响大局就不说了，减少冲突。',bZ:'直接说出来，讨论清楚比闷在心里好。'},
+  {id:23,d:'D3',ja:'見知らぬ人から情報を入手する必要がある。',zh:'需要从陌生人那里获取信息。',aJ:'あまり得意ではないが、必要なら簡潔に直接聞く。',bJ:'問題ない。相手に合わせて話すのは基本スキル。',aZ:'这种事让我不太舒服，但必须的话会简短直接。',bZ:'没问题，见什么人说什么话，这是基本技能。'},
+  {id:24,d:'D3',ja:'「チームメイト」という言葉が意味するのは……',zh:'"队友"这个词对你意味着……',aJ:'同じ任務を遂行する協力者。任務が終われば関係も変わる。',bJ:'共に戦う仲間。その絆はずっと続く。',aZ:'执行同一任务的合作者，任务结束关系也随之调整。',bZ:'并肩作战的伙伴，这种羁绊会一直持续。'},
+  {id:25,d:'D3',ja:'見知らぬ街で長期潜入任務。',zh:'在陌生城市执行长期潜伏任务。',aJ:'単独行動が最も安全。',bJ:'現地に溶け込み人脈を築く方が任務に有利。',aZ:'独来独往是最安全的。',bZ:'融入当地生活、建立人脉对任务更有帮助。'},
+  {id:26,d:'D3',ja:'仲間が重大なミスを犯した。',zh:'队友犯了严重的错误。',aJ:'覚えておき、今後この人への依存を減らす。',bJ:'誰でもミスはする。追及より補助の方が現実的。',aZ:'我会记住，以后减少对此人的依赖。',bZ:'谁都会犯错，帮TA补救比追究更实际。'},
+  {id:27,d:'D3',ja:'あまり親しくない人にあなたの秘密を知られた。',zh:'你的秘密被不太熟的人意外发现了。',aJ:'非常に不安。すぐにリスクを評価しなければ。',bJ:'状況次第だが、むしろ距離を縮めるきっかけになるかも。',aZ:'这让我非常不安，需要立刻评估风险。',bZ:'看情况，也许这反而是拉近关系的契机。'},
+  {id:28,d:'D4',ja:'「あなたの運命は生まれた時から決まっている」と告げられた。',zh:'被告知"你的命运从出生就已经注定"。',aJ:'運命？この手で叩き壊す。',bJ:'運命がこの道を与えたのには理由があるのかもしれない。',aZ:'命运？我会亲手把它砸碎。',bZ:'也许命运给了我这条路是有原因的。'},
+  {id:29,d:'D4',ja:'体に不可逆的な変化が起きた。',zh:'身体发生了不可逆转的变化。',aJ:'あらゆる方法でこの変化に抗う。',bJ:'辛いが、新しい自分と共に生きることを学ぶ。',aZ:'我会想尽一切办法对抗这种变化。',bZ:'虽然痛苦，但要学会与新的自己共处。'},
+  {id:30,d:'D4',ja:'守っていたものがもう取り返しがつかない。',zh:'你所守护的东西已经无法挽回了。',aJ:'なら新たな目標を探す。怒りと悔しさが原動力になる。',bJ:'失っても、守った記憶と意味は残り続ける。',aZ:'那就去寻找新的目标。愤怒和不甘会驱使我继续。',bZ:'即使失去了，守护过的记忆和意义仍然存在。'},
+  {id:31,d:'D4',ja:'勝てない敵が現れた。',zh:'一个无法战胜的敌人出现了。',aJ:'勝てなくても戦う。戦いの中で隙を探す。',bJ:'力を温存し仲間を守る。生き残ってこそ逆転の可能性がある。',aZ:'打不过也要打。在战斗中寻找破绽。',bZ:'保存实力、保护同伴，活着才有翻盘的可能。'},
+  {id:32,d:'D4',ja:'「現実を受け入れろ」と言われた。',zh:'有人说"接受现实吧"。',aJ:'現実を受け入れるのは弱者の言い訳だ。',bJ:'受け入れは諦めではない。現実を見据えてこそ道は開ける。',aZ:'接受现实是懦弱者的借口。',bZ:'接受不等于放弃。认清现实才能找到出路。'},
+  {id:33,d:'D4',ja:'最も大切なものを失った後……',zh:'失去了最重要的东西之后……',aJ:'真相を突き止め、代償を払わせる必要がある。',bJ:'その人が残してくれた意味と共に生き続ける。',aZ:'我需要找到真相，需要有人为此付出代价。',bZ:'我要带着它留下的意义继续活下去。'},
+  {id:34,d:'D4',ja:'「少数を犠牲にして多数を救う」という選択。',zh:'"牺牲少数拯救多数"的选择题。',aJ:'この前提を拒否する。必ず第三の道がある。',bJ:'本当に選択肢がないなら、その決断の重さを背負う覚悟がある。',aZ:'我拒绝接受这种预设。一定有第三条路。',bZ:'如果真的没有选择，我愿意承担做出决定的重量。'},
+  {id:35,d:'D4',ja:'自分の過去をどう表現する？',zh:'你会怎样描述自己的过去？',aJ:'清算し、乗り越えなければならない相手。',bJ:'良いも悪いも含め、今の自分を作ったすべて。',aZ:'是我必须清算和超越的对手。',bZ:'是塑造了现在的我的一切，无论好坏。'},
+  {id:36,d:'D4',ja:'過去の自分に一言伝えるなら。',zh:'如果能对过去的自己说一句话。',aJ:'「強くなれ。十分に強ければ、もう何も失わない。」',bJ:'「あなたはもう十分だ。そばにいる人を守って。」',aZ:'"变强。足够强大就不会再失去任何东西。"',bZ:'"你已经够好了。保护好身边的人。"'}
+];
+const QORDER=[1,19,10,28,5,23,15,33,2,20,11,29,8,25,17,35,3,21,12,30,6,24,14,31,9,27,18,36,4,22,13,32,7,26,16,34];
+
+// ===== STATE =====
+let curQ=0, ans={};
+
+// ===== IMAGE HELPERS =====
+function iconHTML(c,size){
+  return `<img src="${c.icon}" onerror="this.parentElement.innerHTML='<span class=fallback>${c.fb}</span>'" style="width:100%;height:100%;object-fit:cover">`;
+}
+function splashHTML(c){
+  return `<img src="${c.splash}" onerror="this.parentElement.style.display='none'" style="width:100%;display:block">`;
+}
+
+// ===== INIT =====
+function init(){
+  applyI18N();
+  const el=document.getElementById('home-chars');
+  el.innerHTML=Object.values(C).map(c=>`<div class="char-icon-wrap" title="${c[LANG==='ja'?'ja':'zh']}">${iconHTML(c)}</div>`).join('');
+}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){showPage('home');curQ=0;ans={};}
+function startQuiz(){curQ=0;ans={};showPage('quiz');renderQ();}
+
+// ===== QUIZ =====
+function renderQ(){
+  const qId=QORDER[curQ],q=Q.find(x=>x.id===qId),total=QORDER.length;
+  const dm=DIM.find(d=>d.id===q.d);
+  const L=LANG;
+  document.getElementById('q-prog').textContent=`${curQ+1} / ${total}`;
+  document.getElementById('prog-fill').style.width=`${(curQ/total)*100}%`;
+  const scenario=L==='ja'?q.ja:q.zh, oA=L==='ja'?q.aJ:q.aZ, oB=L==='ja'?q.bJ:q.bZ;
+  const lA=L==='ja'?dm.lA_ja:dm.lA_zh, lB=L==='ja'?dm.lB_ja:dm.lB_zh;
+  const prev=ans[qId];
+  document.getElementById('q-area').innerHTML=`
+    <div class="question-card">
+      <div class="question-scenario">${scenario}</div>
+      <div class="option-text" style="border-left:3px solid ${dm.cA}">${oA}</div>
+      <div class="likert-scale">
+        ${[-3,-2,-1,0,1,2,3].map(v=>{
+          const ab=Math.abs(v);
+          const cls=v<0?'pole-a':v>0?'pole-b':'neutral';
+          const sz='sz-'+ab;
+          const sel=prev===v?'selected':'';
+          const lb=ab===3?(L==='ja'?'強':'强'):ab===0?(L==='ja'?'中':'中'):'';
+          return `<button class="likert-btn ${cls} ${sz} ${sel}" onclick="pickAns(${qId},${v},this)">${lb}</button>`;
+        }).join('')}
+      </div>
+      <div class="option-text" style="border-left:3px solid ${dm.cB}">${oB}</div>
+      <div class="likert-labels"><span style="color:${dm.cA}">← ${dm.pA}</span><span style="color:${dm.cB}">${dm.pB} →</span></div>
+    </div>`;
+}
+function pickAns(qId,val,el){
+  ans[qId]=val;
+  el.parentElement.querySelectorAll('.likert-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  setTimeout(()=>{
+    if(curQ<QORDER.length-1){curQ++;renderQ();}
+    else calc();
+  },300);
+}
+
+// ===== CALC =====
+function calc(){
+  const ds={};
+  DIM.forEach(d=>{
+    const qs=Q.filter(q=>q.d===d.id);
+    let sum=0,cnt=0;
+    qs.forEach(q=>{if(ans[q.id]!==undefined){sum+=ans[q.id];cnt++;}});
+    const mx=cnt*3;
+    ds[d.id]=mx>0?Math.round(50+(sum/mx)*50):50;
+  });
+  let best=null,bestS=-Infinity;
+  Object.values(C).forEach(c=>{
+    let sc=0;
+    DIM.forEach(d=>{
+      const exp=50-(c.w[d.id]/2);
+      const diff=ds[d.id]-exp;
+      sc-=diff*diff;
+    });
+    if(sc>bestS){bestS=sc;best=c;}
+  });
+  showResult(best,ds);
+}
+
+// ===== RESULT =====
+function showResult(ch,ds){
+  const L=LANG,ar=ARCH[ch.arch],a=ch.a[L];
+  document.getElementById('prog-fill').style.width='100%';
+  const code=DIM.map(d=>ds[d.id]<=50?d.pA[0]:d.pB[0]).join(' - ');
+  const dimH=DIM.map(d=>{
+    const pctB=ds[d.id],pctA=100-pctB;
+    const wA=Math.max(0,(pctA-50)*2),wB=Math.max(0,(pctB-50)*2);
+    const lA=L==='ja'?d.lA_ja:d.lA_zh,lB=L==='ja'?d.lB_ja:d.lB_zh;
+    const dominant=pctA>=pctB;
+    const dpct=dominant?pctA:pctB;
+    const dcol=dominant?d.cA:d.cB;
+    return `<div class="dim-row">
+      <div class="dim-label" style="color:${d.cA}">${d.pA}<br><span style="font-weight:400;font-size:10px">${lA}</span></div>
+      <div class="dim-bar-wrap">
+        <div class="dim-bar-a" style="width:${wA}%;background:${d.cA}"></div>
+        <div class="dim-bar-b" style="width:${wB}%;background:${d.cB}"></div>
+        <div class="dim-center"></div>
+      </div>
+      <div class="dim-pct" style="color:${dcol}">${dpct}%</div>
+      <div class="dim-label-r" style="color:${d.cB}">${d.pB}<br><span style="font-weight:400;font-size:10px">${lB}</span></div>
+    </div>`;
+  }).join('');
+  const name=L==='ja'?ch.ja:ch.zh;
+  const quote=L==='ja'?ch.quote_ja:ch.quote_zh;
+  const archName=ar[L];
+  document.getElementById('r-content').innerHTML=`
+    <div class="result-hero">
+      <div class="result-archetype">${archName}</div>
+      <div class="result-icon-large" style="border-color:${ar.color}">${iconHTML(ch)}</div>
+      <div class="result-char-name">${name}</div>
+      <div class="result-char-en">${ch.en}</div>
+      <div class="result-code">${code}</div>
+      <div class="result-quote">"${quote}"</div>
+    </div>
+    <div class="result-splash" id="r-splash">${splashHTML(ch)}</div>
+    <div class="result-section"><h3>${t('sec_dim')}</h3><div class="dim-bars">${dimH}</div></div>
+    <div class="result-section"><h3>${t('sec_personality')}</h3><p>${a.desc.replace(/\n/g,'</p><p>')}</p></div>
+    <div class="result-section"><h3>${t('sec_drive')}</h3><p><strong>${t('drive_label')}：</strong>${a.drive}</p><p><strong>${t('stress_label')}：</strong>${a.stress}</p></div>
+    <div class="result-section"><h3>${t('sec_str')}</h3><div class="tags">${a.str.map(s=>`<span class="tag tag-s">${s}</span>`).join('')}</div><div class="tags" style="margin-top:8px">${a.weak.map(w=>`<span class="tag tag-w">${w}</span>`).join('')}</div></div>
+    <div class="result-section"><h3>${t('sec_rel')}</h3><div class="tags">${a.rel.map(r=>`<span class="tag tag-r">${r}</span>`).join('')}</div></div>
+    <div class="result-actions">
+      <button class="btn-secondary" onclick="copyR('${ch.id}')">${t('copy')}</button>
+      <button class="btn-primary" style="flex:1;min-width:130px" onclick="startQuiz()">${t('retry')}</button>
+    </div>
+    <div style="height:40px"></div>`;
+  showPage('result');
+  setTimeout(()=>{
+    document.querySelectorAll('.dim-bar-a,.dim-bar-b').forEach(b=>{const w=b.style.width;b.style.width='0%';setTimeout(()=>b.style.width=w,50);});
+  },100);
+}
+function copyR(id){
+  const ch=C[id],L=LANG,ar=ARCH[ch.arch];
+  const name=L==='ja'?ch.ja:ch.zh;
+  const txt=t('copy_tpl').replace('{arch}',ar[L]).replace('{name}',name).replace('{en}',ch.en).replace('{code}',document.querySelector('.result-code').textContent);
+  navigator.clipboard.writeText(txt).then(()=>showToast(t('copied'))).catch(()=>showToast(t('copy_fail')));
+}
+function showToast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2000);}
+init();
+</script>
+</body>
+</html>
