@@ -64,8 +64,17 @@ body {
 .question-card { background:var(--bg-card); border-radius:16px; padding:28px 24px; border:1px solid var(--border); margin-bottom:24px; animation:fadeIn .4s ease; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 .question-scenario { font-size:16px; line-height:1.7; margin-bottom:24px; text-align:center; padding:0 8px; }
+
+.choice-row { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.choice-block { display:flex; align-items:flex-start; gap:10px; padding:14px 16px; border-radius:12px; border:1px solid; background:rgba(255,255,255,.02); }
+.choice-label { font-size:14px; font-weight:800; flex-shrink:0; min-width:20px; padding-top:1px; }
+.choice-text { font-size:14px; line-height:1.6; color:var(--text-primary); }
+
+.scale-area { margin-top:4px; }
+.scale-hint { font-size:11px; margin-bottom:6px; margin-top:6px; opacity:.7; }
+.likert-scale { display:flex; justify-content:center; align-items:center; gap:6px; margin:8px 0; }
+
 .option-text { font-size:14px; line-height:1.6; padding:12px 16px; background:rgba(255,255,255,.03); border-radius:10px; text-align:center; }
-.likert-scale { display:flex; justify-content:center; align-items:center; gap:6px; margin:20px 0; }
 .likert-btn { border-radius:50%; border:2px solid var(--border); background:transparent; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; font-weight:600; }
 .likert-btn:hover { border-color:var(--accent-gold); background:rgba(212,168,67,.1); }
 .likert-btn.selected { border-color:var(--accent-gold); background:var(--accent-gold); color:#000; }
@@ -459,22 +468,37 @@ function renderQ(){
   const scenario=L==='ja'?q.ja:q.zh, oA=L==='ja'?q.aJ:q.aZ, oB=L==='ja'?q.bJ:q.bZ;
   const lA=L==='ja'?dm.lA_ja:dm.lA_zh, lB=L==='ja'?dm.lB_ja:dm.lB_zh;
   const prev=ans[qId];
+  const agreeA = L==='ja'?'こちらに近い':'更认同这个';
+  const agreeB = L==='ja'?'こちらに近い':'更认同这个';
   document.getElementById('q-area').innerHTML=`
     <div class="question-card">
       <div class="question-scenario">${scenario}</div>
-      <div class="option-text" style="border-left:3px solid ${dm.cA}">${oA}</div>
-      <div class="likert-scale">
-        ${[-3,-2,-1,0,1,2,3].map(v=>{
-          const ab=Math.abs(v);
-          const cls=v<0?'pole-a':v>0?'pole-b':'neutral';
-          const sz='sz-'+ab;
-          const sel=prev===v?'selected':'';
-          const lb=ab===3?(L==='ja'?'強':'强'):ab===0?(L==='ja'?'中':'中'):'';
-          return `<button class="likert-btn ${cls} ${sz} ${sel}" onclick="pickAns(${qId},${v},this)">${lb}</button>`;
-        }).join('')}
+
+      <div class="choice-row">
+        <div class="choice-block choice-a" style="border-color:${dm.cA}">
+          <div class="choice-label" style="color:${dm.cA}">A</div>
+          <div class="choice-text">${oA}</div>
+        </div>
+        <div class="choice-block choice-b" style="border-color:${dm.cB}">
+          <div class="choice-label" style="color:${dm.cB}">B</div>
+          <div class="choice-text">${oB}</div>
+        </div>
       </div>
-      <div class="option-text" style="border-left:3px solid ${dm.cB}">${oB}</div>
-      <div class="likert-labels"><span style="color:${dm.cA}">← ${dm.pA}</span><span style="color:${dm.cB}">${dm.pB} →</span></div>
+
+      <div class="scale-area">
+        <div class="scale-hint" style="color:${dm.cA}">← A ${agreeA}</div>
+        <div class="likert-scale">
+          ${[-3,-2,-1,0,1,2,3].map(v=>{
+            const ab=Math.abs(v);
+            const cls=v<0?'pole-a':v>0?'pole-b':'neutral';
+            const sz='sz-'+ab;
+            const sel=prev===v?'selected':'';
+            return `<button class="likert-btn ${cls} ${sz} ${sel}" onclick="pickAns(${qId},${v},this)"></button>`;
+          }).join('')}
+        </div>
+        <div class="scale-hint" style="color:${dm.cB};text-align:right">B ${agreeB} →</div>
+      </div>
+
     </div>`;
 }
 function pickAns(qId,val,el){
