@@ -76,14 +76,7 @@ body {
 
 .option-text { font-size:14px; line-height:1.6; padding:12px 16px; background:rgba(255,255,255,.03); border-radius:10px; text-align:center; }
 .likert-btn { border-radius:50%; border:2px solid var(--border); background:transparent; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; font-weight:600; }
-.likert-btn:hover { border-color:var(--accent-gold); background:rgba(212,168,67,.1); }
-.likert-btn.selected { border-color:var(--accent-gold); background:var(--accent-gold); color:#000; }
-.likert-btn.pole-a { border-color:rgba(59,130,246,.5); }
-.likert-btn.pole-a:hover,.likert-btn.pole-a.selected { background:var(--accent-blue); color:#fff; border-color:var(--accent-blue); }
-.likert-btn.pole-b { border-color:rgba(20,184,166,.5); }
-.likert-btn.pole-b:hover,.likert-btn.pole-b.selected { background:var(--accent-teal); color:#fff; border-color:var(--accent-teal); }
-.likert-btn.neutral { border-color:rgba(156,163,175,.5); }
-.likert-btn.neutral.selected { background:var(--text-secondary); color:#000; }
+.likert-btn.selected { color:#000; }
 .sz-3{width:48px;height:48px;font-size:14px} .sz-2{width:42px;height:42px} .sz-1{width:36px;height:36px} .sz-0{width:30px;height:30px;font-size:11px}
 .likert-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-top:8px; }
 
@@ -490,10 +483,13 @@ function renderQ(){
         <div class="likert-scale">
           ${[-3,-2,-1,0,1,2,3].map(v=>{
             const ab=Math.abs(v);
-            const cls=v<0?'pole-a':v>0?'pole-b':'neutral';
             const sz='sz-'+ab;
             const sel=prev===v?'selected':'';
-            return `<button class="likert-btn ${cls} ${sz} ${sel}" onclick="pickAns(${qId},${v},this)"></button>`;
+            const pole=v<0?'a':v>0?'b':'n';
+            const borderCol=v<0?dm.cA:v>0?dm.cB:'rgba(156,163,175,.5)';
+            const bgCol=sel?(v===0?'var(--text-secondary)':(v<0?dm.cA:dm.cB)):'transparent';
+            const txtCol=sel?'#000':'var(--text-secondary)';
+            return `<button class="likert-btn ${sz} ${sel?'selected':''}" style="border-color:${borderCol};${sel?'background:'+bgCol+';color:'+txtCol:''}" onmouseover="this.style.borderColor='${v<0?dm.cA:v>0?dm.cB:borderCol}';this.style.background='${v<0?dm.cA+'22':v>0?dm.cB+'22':'rgba(156,163,175,.1)'}'" onmouseout="if(!this.classList.contains('selected')){this.style.background='transparent'}" onclick="pickAns(${qId},${v},this,'${dm.cA}','${dm.cB}')"></button>`;
           }).join('')}
         </div>
         <div class="scale-hint" style="color:${dm.cB};text-align:right">B ${agreeB} →</div>
@@ -501,10 +497,22 @@ function renderQ(){
 
     </div>`;
 }
-function pickAns(qId,val,el){
+function pickAns(qId,val,el,cA,cB){
   ans[qId]=val;
-  el.parentElement.querySelectorAll('.likert-btn').forEach(b=>b.classList.remove('selected'));
+  const btns=el.parentElement.querySelectorAll('.likert-btn');
+  btns.forEach((b,i)=>{
+    b.classList.remove('selected');
+    const bv=i-3;
+    const borderCol=bv<0?cA:bv>0?cB:'rgba(156,163,175,.5)';
+    b.style.borderColor=borderCol;
+    b.style.background='transparent';
+    b.style.color='var(--text-secondary)';
+  });
   el.classList.add('selected');
+  const selColor=val<0?cA:val>0?cB:'var(--text-secondary)';
+  el.style.background=selColor;
+  el.style.color='#000';
+  el.style.borderColor=selColor;
   setTimeout(()=>{
     if(curQ<QORDER.length-1){curQ++;renderQ();}
     else calc();
