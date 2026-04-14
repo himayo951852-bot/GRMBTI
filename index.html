@@ -171,7 +171,7 @@ body::after {
   <div id="page-quiz" class="page">
     <div class="quiz-header">
       <button class="quiz-back" onclick="goHome()" data-i="back"></button>
-      <button class="quiz-prev" id="btn-prev" onclick="prevQ()" style="display:none">←</button>
+      <button class="quiz-prev" id="btn-prev" onclick="prevQ()" style="display:none">← <span data-i="prev_q"></span></button>
       <span class="quiz-progress-text" id="q-prog">1 / 20</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
@@ -189,7 +189,7 @@ const I18N = {
     title: '先覚者タイプ診断',
     subtitle: '20の質問に答えて、あなたの中に眠る先覚者の人格を解き明かそう。\nあなたはどの先覚者に最も近い存在なのか——',
     stat_q: '質問数', stat_c: 'キャラ', stat_d: '次元',
-    start: '診断を開始する', back: '← 戻る',
+    start: '診断を開始する', back: '← 戻る', prev_q: '前の質問',
     sec_dim: '📊 次元分析', sec_personality: '🔍 性格分析',
     sec_drive: '⚡ 駆動力とプレッシャー', sec_str: '✨ 強みと弱み', sec_rel: '💫 関係スタイル',
     drive_label: '駆動力', stress_label: 'プレッシャー',
@@ -201,7 +201,7 @@ const I18N = {
     title: '先觉者人格测试',
     subtitle: '回答20道题，解锁你内心深处的先觉者人格。\n你最接近哪位先觉者——',
     stat_q: '题目', stat_c: '角色', stat_d: '维度',
-    start: '开始测试', back: '← 返回',
+    start: '开始测试', back: '← 返回', prev_q: '上一题',
     sec_dim: '📊 维度分析', sec_personality: '🔍 性格解析',
     sec_drive: '⚡ 驱动力与压力源', sec_str: '✨ 优势与盲点', sec_rel: '💫 关系风格',
     drive_label: '驱动力', stress_label: '压力源',
