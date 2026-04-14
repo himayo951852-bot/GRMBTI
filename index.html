@@ -77,6 +77,8 @@ body::after {
 /* QUIZ */
 .quiz-header { display:flex; align-items:center; justify-content:space-between; padding:16px 0; margin-bottom:20px; }
 .quiz-back { background:none; border:none; color:var(--text-secondary); font-size:14px; cursor:pointer; padding:8px; }
+.quiz-prev { background:none; border:1px solid var(--border); color:var(--text-secondary); font-size:14px; cursor:pointer; padding:6px 14px; border-radius:8px; transition:all .2s; }
+.quiz-prev:hover { border-color:var(--accent-gold); color:var(--text-primary); }
 .quiz-progress-text { font-size:14px; color:var(--accent-gold); font-weight:600; }
 .progress-bar { width:100%; height:4px; background:rgba(0,0,0,.06); border-radius:2px; margin-bottom:32px; overflow:hidden; }
 .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent-gold),var(--accent-teal)); border-radius:2px; transition:width .4s ease; }
@@ -169,7 +171,8 @@ body::after {
   <div id="page-quiz" class="page">
     <div class="quiz-header">
       <button class="quiz-back" onclick="goHome()" data-i="back"></button>
-      <span class="quiz-progress-text" id="q-prog">1 / 36</span>
+      <button class="quiz-prev" id="btn-prev" onclick="prevQ()" style="display:none">←</button>
+      <span class="quiz-progress-text" id="q-prog">1 / 20</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
     <div id="q-area"></div>
@@ -453,6 +456,7 @@ function init(){
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');window.scrollTo(0,0);}
 function goHome(){showPage('home');curQ=0;ans={};}
 function startQuiz(){curQ=0;ans={};showPage('quiz');renderQ();}
+function prevQ(){if(curQ>0){curQ--;renderQ();}}
 
 // ===== QUIZ =====
 function renderQ(){
@@ -461,6 +465,7 @@ function renderQ(){
   const L=LANG;
   document.getElementById('q-prog').textContent=`${curQ+1} / ${total}`;
   document.getElementById('prog-fill').style.width=`${(curQ/total)*100}%`;
+  document.getElementById('btn-prev').style.display=curQ>0?'inline-block':'none';
   const scenario=L==='ja'?q.ja:q.zh, oA=L==='ja'?q.aJ:q.aZ, oB=L==='ja'?q.bJ:q.bZ;
   const lA=L==='ja'?dm.lA_ja:dm.lA_zh, lB=L==='ja'?dm.lB_ja:dm.lB_zh;
   const prev=ans[qId];
