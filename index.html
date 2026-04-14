@@ -109,7 +109,8 @@ body::after {
 .result-icon-large .fallback { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:56px; }
 .result-char-name { font-size:36px; font-weight:800; margin-bottom:4px; }
 .result-char-en { font-size:16px; color:var(--text-secondary); letter-spacing:4px; margin-bottom:20px; }
-.result-code { display:inline-block; padding:8px 20px; background:rgba(212,168,67,.1); border:1px solid var(--accent-gold); border-radius:8px; font-family:monospace; font-size:18px; font-weight:700; letter-spacing:4px; color:var(--accent-gold); margin-bottom:24px; }
+.result-code { display:inline-block; padding:8px 20px; background:rgba(184,134,11,.08); border:1px solid var(--accent-gold); border-radius:8px; font-family:monospace; font-size:18px; font-weight:700; letter-spacing:4px; color:var(--accent-gold); margin-bottom:12px; }
+.result-pct { font-size:13px; color:var(--text-secondary); margin-bottom:20px; }
 .result-quote { font-size:14px; font-style:italic; color:var(--text-secondary); line-height:1.8; padding:0 20px; margin-bottom:32px; }
 .result-splash { width:100%; max-width:400px; margin:0 auto 32px; border-radius:16px; overflow:hidden; border:1px solid var(--border); }
 .result-splash img { width:100%; display:block; }
@@ -231,7 +232,7 @@ function applyI18N(){
 // 如果图片不存在会自动显示fallback emoji
 
 const C = {
-  eos:{id:'eos',zh:'伊欧斯',en:'EOS',ja:'イオス',arch:'seeker',fb:'🔬',
+  eos:{id:'eos',zh:'伊欧斯',en:'EOS',ja:'イオス',arch:'seeker',fb:'🔬',pct:9,
     icon:'icons/EOS.jpg',splash:'splash/EOS.jpg',
     quote_ja:'科学と真理の光を握りしめ、行く手の迷いと闇を払う。',
     quote_zh:'紧握科学与真理之光，驱散前路的迷茫与黑暗。',
@@ -248,7 +249,7 @@ const C = {
         weak:['容易陷入"一个人扛"的模式','把善意听成质疑','对自己过于苛刻'],
         rel:['不擅长主动建立关系，但信任后极其深厚','需要"能理解自己"的人才会打开心门','对不理解自己的人容易产生距离感']}}
   },
-  camille:{id:'camille',zh:'卡蜜儿',en:'CAMILLE',ja:'カミール',arch:'awakener',fb:'💠',
+  camille:{id:'camille',zh:'卡蜜儿',en:'CAMILLE',ja:'カミール',arch:'awakener',fb:'💠',pct:8,
     icon:'icons/CAMILLE.jpg',splash:'splash/CAMILLE.jpg',
     quote_ja:'彼女は誰にもなるべきではない。彼女は彼女自身になる。',
     quote_zh:'她不该成为任何人。她将会成为她自己。',
@@ -265,7 +266,7 @@ const C = {
         weak:['过度分析自己的情感反应','有时分不清"理解"和"体验"','对自己的期待不明确'],
         rel:['对亲近的人极其重视，记住每一个细节','不轻易表达情感，但一定真诚','更擅长倾听而非倾诉']}}
   },
-  nase:{id:'nase',zh:'名濑',en:'NASE',ja:'ナセ',arch:'pioneer',fb:'⚓',
+  nase:{id:'nase',zh:'名濑',en:'NASE',ja:'ナセ',arch:'pioneer',fb:'⚓',pct:14,
     icon:'icons/NASE.jpg',splash:'splash/NASE.jpg',
     quote_ja:'霧が晴れた後、海面に輝くのは勇気だけでなく、仲間と歩んだ記憶。',
     quote_zh:'浓雾散去后，海面上闪耀的不只是勇气，还有与伙伴们并肩的回忆。',
@@ -282,7 +283,7 @@ const C = {
         weak:['有时高估自己的极限','不擅长"等待"','把压力藏在笑容背后'],
         rel:['开朗热情，天然的团队核心','极重情义','最危险的时刻反而最冷静可靠']}}
   },
-  xiva:{id:'xiva',zh:'希',en:'XIVA',ja:'シヤ',arch:'survivor',fb:'🔥',
+  xiva:{id:'xiva',zh:'希',en:'XIVA',ja:'シヤ',arch:'survivor',fb:'🔥',pct:7,
     icon:'icons/XIVA.jpg',splash:'splash/XIVA.jpg',
     quote_ja:'霽焔灼灼、燎原不滅。',
     quote_zh:'霁焰灼灼，燎原不灭。',
@@ -299,7 +300,7 @@ const C = {
         weak:['容易被仇恨驱使做极端选择','拒绝示弱','把所有问题自己扛'],
         rel:['很难敞开心扉，但一旦信任毫无保留','不善言辞，用行动表达一切','讨厌虚伪和表面文章']}}
   },
-  mindy:{id:'mindy',zh:'明迪',en:'MINDY',ja:'ミンディ',arch:'pioneer',fb:'⚡',
+  mindy:{id:'mindy',zh:'明迪',en:'MINDY',ja:'ミンディ',arch:'pioneer',fb:'⚡',pct:12,
     icon:'icons/MINDY.jpg',splash:'splash/MINDY.jpg',
     quote_ja:'役に立たないものなんてない。まだ使い方を見つけてないだけ。',
     quote_zh:'没有什么东西是没用的，只是你还没找到它的用法。',
@@ -316,7 +317,7 @@ const C = {
         weak:['太在意利弊得失','不愿正视自己的脆弱','偶尔太自作聪明'],
         rel:['自来熟但有戒心','用幽默和狡黠保护自己','认定一个人后出乎意料地慷慨']}}
   },
-  ryoin:{id:'ryoin',zh:'獠隐',en:'RYOIN',ja:'獠隠',arch:'survivor',fb:'🐺',
+  ryoin:{id:'ryoin',zh:'獠隐',en:'RYOIN',ja:'獠隠',arch:'survivor',fb:'🐺',pct:6,
     icon:'icons/RYOIN.jpg',splash:'splash/RYOIN.jpg',
     quote_ja:'首の鎖は血肉に食い込んでいる。だが荒野の子は決して運命に屈しない。',
     quote_zh:'脖颈上的镣铐已经没入血肉，但荒野的孩子绝不会认命。',
@@ -333,7 +334,7 @@ const C = {
         weak:['过度防备会伤害真心接近的人','容易在"不属于任何地方"中沉沦','背叛的记忆扭曲判断'],
         rel:['极难信任，但信任后忠诚度极高','用行动而非语言表达','独处是充电，社交是消耗']}}
   },
-  soarwynne:{id:'soarwynne',zh:'索尔维亚',en:'SOARWYNNE',ja:'ソルヴェイア',arch:'guardian',fb:'🦅',
+  soarwynne:{id:'soarwynne',zh:'索尔维亚',en:'SOARWYNNE',ja:'ソルヴェイア',arch:'guardian',fb:'🦅',pct:11,
     icon:'icons/SOARWYNNE.jpg',splash:'splash/SOARWYNNE.jpg',
     quote_ja:'山谷と密林の上を翔け、隼のように忠実で勇敢に。',
     quote_zh:'翱翔于山谷与丛林之上，如赤隼般忠诚勇敢。',
@@ -350,7 +351,7 @@ const C = {
         weak:['太过把一切扛在肩上','不善于求助','对失去的悲伤藏得太深'],
         rel:['沉稳可靠，团队的定海神针','对亲近的人极度忠诚','在你身边永远有安全感']}}
   },
-  kira:{id:'kira',zh:'绮罗',en:'KIRA',ja:'キラ',arch:'awakener',fb:'🎮',
+  kira:{id:'kira',zh:'绮罗',en:'KIRA',ja:'キラ',arch:'awakener',fb:'🎮',pct:13,
     icon:'icons/KIRA.jpg',splash:'splash/KIRA.jpg',
     quote_ja:'守る意志はゲームの世界から現実へと続く。',
     quote_zh:'守护的意志从游戏世界延续到现实世界。',
@@ -367,7 +368,7 @@ const C = {
         weak:['容易低估自己','有时过度依赖安全区','被恶意伤害后自我修复需要很长时间'],
         rel:['内向但不冷漠，在熟人面前很温暖','极度珍视认可和鼓励','会为在意的人爆发不可思议的勇气']}}
   },
-  cynric:{id:'cynric',zh:'西瑞克',en:'CYNRIC',ja:'シリク',arch:'guardian',fb:'💎',
+  cynric:{id:'cynric',zh:'西瑞克',en:'CYNRIC',ja:'シリク',arch:'guardian',fb:'💎',pct:10,
     icon:'icons/CYNRIC.jpg',splash:'splash/CYNRIC.jpg',
     quote_ja:'本当にあなたを縛っているのは体の結晶ではなく、心の檻。',
     quote_zh:'真正束缚你的从来不是身上的晶石，而是心中的牢笼。',
@@ -384,7 +385,7 @@ const C = {
         weak:['把所有人推开的习惯','用愤怒代替悲伤','不愿承认需要帮助'],
         rel:['用尖刻的话保护自己，真心话藏在讽刺背后','不善表达感激，但会用行动回报','需要极大耐心才能走进内心']}}
   },
-  huxley:{id:'huxley',zh:'赫希黎',en:'HUXLEY',ja:'ハクスリー',arch:'seeker',fb:'♟️',
+  huxley:{id:'huxley',zh:'赫希黎',en:'HUXLEY',ja:'ハクスリー',arch:'seeker',fb:'♟️',pct:10,
     icon:'icons/HUXLEY.jpg',splash:'splash/HUXLEY.jpg',
     quote_ja:'最も鋭い刃は常にシルクの手袋の中に隠されている。',
     quote_zh:'最锋利的刀刃永远藏在丝绒手套之下。',
@@ -584,6 +585,7 @@ function showResult(ch,ds){
       <div class="result-char-name">${name}</div>
       <div class="result-char-en">${ch.en}</div>
       <div class="result-code">${code}</div>
+      <div class="result-pct">${L==='ja'?'約'+ch.pct+'%の人があなたと同じタイプ':'约'+ch.pct+'%的人与你是同一类型'}</div>
       <div class="result-quote">"${quote}"</div>
     </div>
     <div class="result-splash" id="r-splash">${splashHTML(ch)}</div>
@@ -699,11 +701,17 @@ function drawCardContent(ctx, W, H, ch, ds, name, quote, archName, code, ar, cvs
   ctx.fillStyle=ar.color;
   ctx.fillText(code, W/2, 285);
 
+  // Percentage
+  ctx.fillStyle='#5a5a72';
+  ctx.font='12px sans-serif';
+  const pctText=L==='ja'?'約'+ch.pct+'%の人があなたと同じタイプ':'约'+ch.pct+'%的人与你是同一类型';
+  ctx.fillText(pctText, W/2, 308);
+
   // Quote
   ctx.fillStyle='#5a5a72';
   ctx.font='italic 12px sans-serif';
   const qLines=wrapText(ctx, '"'+quote+'"', W-100);
-  let qY=318;
+  let qY=332;
   qLines.forEach(line=>{
     ctx.fillText(line, W/2, qY);
     qY+=18;
