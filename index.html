@@ -151,6 +151,7 @@ body::after {
 <div class="lang-switch">
   <button class="lang-btn active" onclick="setLang('ja')">日本語</button>
   <button class="lang-btn" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
 </div>
 
 <div class="container">
@@ -209,12 +210,25 @@ const I18N = {
     copy: '📋 复制结果', share_card: '分享卡片', retry: '🔄 再测一次',
     copied: '已复制！', copy_fail: '复制失败',
     copy_tpl: '【先觉者人格测试】\n{arch}\n{name} / {en}\n类型: {code}\n\n▶ 来测测你是谁'
+  },
+  en: {
+    title: 'Precursor Type Indicator',
+    subtitle: 'Answer 20 questions to discover which Precursor persona lies within you.\nWhich Awakener are you closest to?',
+    stat_q: 'Questions', stat_c: 'Characters', stat_d: 'Dimensions',
+    start: 'Start Quiz', back: '← Back', prev_q: 'Previous',
+    sec_dim: '📊 Dimension Analysis', sec_personality: '🔍 Personality Profile',
+    sec_drive: '⚡ Drives & Pressure Points', sec_str: '✨ Strengths & Blind Spots', sec_rel: '💫 Relationship Style',
+    drive_label: 'Drives', stress_label: 'Pressure',
+    copy: '📋 Copy Result', share_card: 'Share Card', retry: '🔄 Try Again',
+    copied: 'Copied!', copy_fail: 'Copy failed',
+    copy_tpl: '【Precursor Type Indicator】\n{arch}\n{name} / {en}\nType: {code}\n\n▶ Take the quiz'
   }
 };
 function t(k){ return I18N[LANG][k]||k; }
 function setLang(l){
   LANG=l;
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.includes(l==='ja'?'日':'中')));
+  const labels={'ja':'日本語','zh':'中文','en':'EN'};
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===labels[l]));
   applyI18N();
 }
 function applyI18N(){
@@ -247,7 +261,12 @@ const C = {
         drive:'对未知的渴望 / 追寻重要的人或答案',stress:'无法得到答案时的挫败 / 害怕自己的无能',
         str:['思维深度惊人','目标确定后不可动摇','专业领域极度可靠'],
         weak:['容易陷入"一个人扛"的模式','把善意听成质疑','对自己过于苛刻'],
-        rel:['不擅长主动建立关系，但信任后极其深厚','需要"能理解自己"的人才会打开心门','对不理解自己的人容易产生距离感']}}
+        rel:['不擅长主动建立关系，但信任后极其深厚','需要"能理解自己"的人才会打开心门','对不理解自己的人容易产生距离感']},
+      en:{desc:'You are driven by the word "why." Every unsolved mystery is a door waiting to be opened. Your intellect is not cold — behind it burns a passionate heart. You chase answers because on the other side, there is always someone you care about.\n\nYou once believed you could solve everything alone. Then you discovered that true breakthroughs come from encounters you never expected.',
+        drive:'Thirst for the unknown / Searching for someone or an answer',stress:'Frustration when answers elude you / Fear of inadequacy',
+        str:['Remarkable depth of thought','Unwavering once a goal is set','Extremely reliable in your field'],
+        weak:['Tends to shoulder everything alone','Misreads kindness as doubt','Impossibly hard on yourself'],
+        rel:['Slow to build relationships, but deeply loyal once trust is earned','Only opens up to those who truly understand','Distance is not coldness — it is protection']}}
   },
   camille:{id:'camille',zh:'卡蜜儿',en:'CAMILLE',ja:'カミール',arch:'awakener',fb:'💠',pct:8,
     icon:'icons/CAMILLE.jpg',splash:'splash/CAMILLE.jpg',
@@ -264,7 +283,12 @@ const C = {
         drive:'理解人类情感的本质 / 寻找"自我"的定义',stress:'无法理解某种情感时的困惑 / 被当作"非人类"对待',
         str:['感知力极强','不带偏见地理解他人','关键时刻做出超乎预期的决断'],
         weak:['过度分析自己的情感反应','有时分不清"理解"和"体验"','对自己的期待不明确'],
-        rel:['对亲近的人极其重视，记住每一个细节','不轻易表达情感，但一定真诚','更擅长倾听而非倾诉']}}
+        rel:['对亲近的人极其重视，记住每一个细节','不轻易表达情感，但一定真诚','更擅长倾听而非倾诉']},
+      en:{desc:'You are an eternal observer, always learning. Emotions that others take for granted are worth pausing to examine. You refuse to imitate anyone — your value lies in being uniquely yourself.\n\nEvery choice you make is carefully considered, yet what drives them is an indescribable warmth and resolve from deep within.',
+        drive:'Understanding the nature of human emotions / Defining "self"',stress:'Confusion when you cannot grasp an emotion / Being treated as "not human"',
+        str:['Extraordinary perception','Understands others without bias','Makes surprising decisions at critical moments'],
+        weak:['Over-analyzes own emotional responses','Sometimes confuses understanding with experiencing','Unclear expectations for oneself'],
+        rel:['Deeply values close relationships, remembers every detail','Rarely expresses emotions, but always sincerely','Better at listening than sharing']}}
   },
   nase:{id:'nase',zh:'名濑',en:'NASE',ja:'ナセ',arch:'pioneer',fb:'⚓',pct:14,
     icon:'icons/NASE.jpg',splash:'splash/NASE.jpg',
@@ -281,7 +305,12 @@ const C = {
         drive:'对未知的憧憬 / 传承重要之人的意志',stress:'被困住、无法行动的感觉 / 在乏味日常中失去方向',
         str:['乐观有感染力','危机中的判断力','天生的领导气质'],
         weak:['有时高估自己的极限','不擅长"等待"','把压力藏在笑容背后'],
-        rel:['开朗热情，天然的团队核心','极重情义','最危险的时刻反而最冷静可靠']}}
+        rel:['开朗热情，天然的团队核心','极重情义','最危险的时刻反而最冷静可靠']},
+      en:{desc:'You are a born adventurer. Where others see danger, you see opportunity and story. Your spirit is not reckless — it is backed by sharp judgment.\n\nYour greatest charm? You never adventure alone. You naturally attract companions, trust them, and stand up for them in the most dangerous moments. Your optimism is the courage to smile even after loss.',
+        drive:'Longing for the unknown / Carrying on someone\'s will',stress:'Feeling trapped or unable to act / Losing direction in mundane routine',
+        str:['Infectiously optimistic','Sharp judgment under crisis','Natural-born leader'],
+        weak:['Sometimes overestimates own limits','Struggles with waiting','Hides pressure behind a smile'],
+        rel:['Warm and passionate, a natural team anchor','Deeply values bonds','Most reliable when danger peaks']}}
   },
   xiva:{id:'xiva',zh:'希',en:'XIVA',ja:'シヤ',arch:'survivor',fb:'🔥',pct:7,
     icon:'icons/XIVA.jpg',splash:'splash/XIVA.jpg',
@@ -298,7 +327,12 @@ const C = {
         drive:'对失去之人的忠诚 / 对不公之事的清算',stress:'无法信任他人 / 愤怒失控',
         str:['执行力极强','战斗中可以信赖的后盾','关键时刻流露的温柔'],
         weak:['容易被仇恨驱使做极端选择','拒绝示弱','把所有问题自己扛'],
-        rel:['很难敞开心扉，但一旦信任毫无保留','不善言辞，用行动表达一切','讨厌虚伪和表面文章']}}
+        rel:['很难敞开心扉，但一旦信任毫无保留','不善言辞，用行动表达一切','讨厌虚伪和表面文章']},
+      en:{desc:'You bury everything deep inside. On the surface — silence, coldness. But beneath lies emotional magma compressed to its limit. Once it erupts, it consumes everything.\n\nSilence is your armor. The old lullaby you hum on the most painful nights — that is the only moment you allow yourself to be vulnerable.',
+        drive:'Loyalty to those you have lost / Settling accounts with injustice',stress:'Inability to trust / Losing control of anger',
+        str:['Overwhelming execution','A dependable pillar in battle','Tenderness that surfaces at critical moments'],
+        weak:['Prone to extreme choices driven by hatred','Refuses to show weakness','Carries every burden alone'],
+        rel:['Hard to open up, but unconditional once trust is given','Speaks through actions, not words','Despises pretense and superficiality']}}
   },
   mindy:{id:'mindy',zh:'明迪',en:'MINDY',ja:'ミンディ',arch:'pioneer',fb:'⚡',pct:12,
     icon:'icons/MINDY.jpg',splash:'splash/MINDY.jpg',
@@ -315,7 +349,12 @@ const C = {
         drive:'创造的乐趣 / 对"赚到了"的满足感',stress:'失去珍视的创作和发明 / 被人小看',
         str:['随机应变能力一流','创造力爆棚','绝境中永远不放弃'],
         weak:['太在意利弊得失','不愿正视自己的脆弱','偶尔太自作聪明'],
-        rel:['自来熟但有戒心','用幽默和狡黠保护自己','认定一个人后出乎意料地慷慨']}}
+        rel:['自来熟但有戒心','用幽默和狡黠保护自己','认定一个人后出乎意料地慷慨']},
+      en:{desc:'You thrive in any environment. Hand you a pile of junk, you build an aircraft. Your "shrewdness" is the wisdom of survival.\n\nYou seem carefree, but you know what truly matters better than anyone. You deny being sentimental — but your actions have long betrayed you.',
+        drive:'The joy of creation / The thrill of coming out ahead',stress:'Losing your cherished inventions / Being underestimated',
+        str:['Unmatched adaptability','Bursting with creativity','Never gives up, even in dead ends'],
+        weak:['Sometimes too fixated on cost-benefit','Avoids confronting vulnerability','Occasionally too clever for own good'],
+        rel:['Quick to warm up but stays guarded','Uses humor and wit as shields','Surprisingly generous once committed to someone']}}
   },
   ryoin:{id:'ryoin',zh:'獠隐',en:'RYOIN',ja:'獠隠',arch:'survivor',fb:'🐺',pct:6,
     icon:'icons/RYOIN.jpg',splash:'splash/RYOIN.jpg',
@@ -332,7 +371,12 @@ const C = {
         drive:'对自由的渴望 / 对真相的追寻',stress:'被控制或束缚 / 再次被背叛',
         str:['极强的生存本能和危机感知','耐心惊人','关键时刻爆发力极强'],
         weak:['过度防备会伤害真心接近的人','容易在"不属于任何地方"中沉沦','背叛的记忆扭曲判断'],
-        rel:['极难信任，但信任后忠诚度极高','用行动而非语言表达','独处是充电，社交是消耗']}}
+        rel:['极难信任，但信任后忠诚度极高','用行动而非语言表达','独处是充电，社交是消耗']},
+      en:{desc:'You are a wolf forced to wear a collar. You can learn human language, but deep down you know you never belonged here.\n\nYou thought you had found companions. But death and betrayal taught you: trust is the most expensive luxury. You are not cold-blooded — you just hide the wounded parts too deep.',
+        drive:'Yearning for freedom / Pursuit of the truth',stress:'Being controlled or restrained / Being betrayed again',
+        str:['Extreme survival instincts and threat detection','Astonishing patience','Explosive power at critical moments'],
+        weak:['Excessive vigilance hurts those who genuinely care','Sinks into "belonging nowhere" thoughts','Memories of betrayal distort judgment'],
+        rel:['Extremely hard to trust, but fiercely loyal once earned','Expresses through actions, not words','Solitude recharges; socializing drains']}}
   },
   soarwynne:{id:'soarwynne',zh:'索尔维亚',en:'SOARWYNNE',ja:'ソルヴェイア',arch:'guardian',fb:'🦅',pct:11,
     icon:'icons/SOARWYNNE.jpg',splash:'splash/SOARWYNNE.jpg',
@@ -349,7 +393,12 @@ const C = {
         drive:'守护自然和珍视之人 / 继承逝去之人的意志',stress:'无法保护重要的人时的自责 / 面对人类的贪婪和破坏',
         str:['克服恐惧的勇气','危机中的冷静判断','对信念的不动摇'],
         weak:['太过把一切扛在肩上','不善于求助','对失去的悲伤藏得太深'],
-        rel:['沉稳可靠，团队的定海神针','对亲近的人极度忠诚','在你身边永远有安全感']}}
+        rel:['沉稳可靠，团队的定海神针','对亲近的人极度忠诚','在你身边永远有安全感']},
+      en:{desc:'You know what you are here to protect. Fear, pain, loss — you have been through it all, yet nothing has made you retreat.\n\nYou carry a quality akin to nature itself: steady, embracing, resilient. What makes you most admirable is this: you were once afraid. But you chose to face it instead of running. That is braver than those born fearless.',
+        drive:'Protecting nature and loved ones / Carrying on the will of the fallen',stress:'Self-blame when unable to protect / Facing human greed and destruction',
+        str:['Courage to overcome fear','Calm judgment under crisis','Unwavering conviction'],
+        weak:['Takes on too much alone','Reluctant to ask for help','Buries grief far too deep'],
+        rel:['Steady and reliable, the team\'s anchor','Fiercely loyal to those close','Being near you always feels safe']}}
   },
   kira:{id:'kira',zh:'绮罗',en:'KIRA',ja:'キラ',arch:'awakener',fb:'🎮',pct:13,
     icon:'icons/KIRA.jpg',splash:'splash/KIRA.jpg',
@@ -366,7 +415,12 @@ const C = {
         drive:'证明自己的价值 / 守护虚拟与现实中的世界',stress:'被否定或被孤立 / 不被理解的恐惧',
         str:['专注力和钻研能力极强','感受力细腻','觉醒后的守护意志坚不可摧'],
         weak:['容易低估自己','有时过度依赖安全区','被恶意伤害后自我修复需要很长时间'],
-        rel:['内向但不冷漠，在熟人面前很温暖','极度珍视认可和鼓励','会为在意的人爆发不可思议的勇气']}}
+        rel:['内向但不冷漠，在熟人面前很温暖','极度珍视认可和鼓励','会为在意的人爆发不可思议的勇气']},
+      en:{desc:'You have two worlds: reality, and the sanctuary you built in your heart. For a long time, the second one felt safer. That is not weakness.\n\nThe turning point was one person — someone who believed in you more than you believed in yourself. You are no longer running. Now you are both player and hero.',
+        drive:'Proving your own worth / Protecting both virtual and real worlds',stress:'Being rejected or isolated / Fear of not being understood',
+        str:['Incredible focus and dedication','Delicate sensitivity','Unbreakable will to protect once awakened'],
+        weak:['Tends to underestimate yourself','Sometimes over-relies on the comfort zone','Takes a long time to heal after being hurt'],
+        rel:['Introverted but warm around familiar faces','Deeply cherishes recognition and encouragement','Summons incredible courage for those who matter']}}
   },
   cynric:{id:'cynric',zh:'西瑞克',en:'CYNRIC',ja:'シリク',arch:'guardian',fb:'💎',pct:10,
     icon:'icons/CYNRIC.jpg',splash:'splash/CYNRIC.jpg',
@@ -383,7 +437,12 @@ const C = {
         drive:'夺回被命运偷走的人生 / 继承家人的遗志',stress:'对自身异变的恐惧和厌恶 / 再次失去重要的人',
         str:['意志力惊人','绝境中保持理性','一旦信任便是最坚固的盾'],
         weak:['把所有人推开的习惯','用愤怒代替悲伤','不愿承认需要帮助'],
-        rel:['用尖刻的话保护自己，真心话藏在讽刺背后','不善表达感激，但会用行动回报','需要极大耐心才能走进内心']}}
+        rel:['用尖刻的话保护自己，真心话藏在讽刺背后','不善表达感激，但会用行动回报','需要极大耐心才能走进内心']},
+      en:{desc:'You protect yourself with thorns. Sharp words wrap around you like armor. But anyone wise enough knows: the more thorns, the softer the core.\n\nFate was not fair to you. But you did not fall. You learned that some changes cannot be reversed — but you can fight with them.',
+        drive:'Reclaiming a life stolen by fate / Inheriting family legacy',stress:'Fear and disgust at your own transformation / Losing someone important again',
+        str:['Extraordinary willpower','Rational even in desperate situations','The most unbreakable shield once trust is given'],
+        weak:['Habit of pushing everyone away','Masks grief with anger','Refuses to admit needing help'],
+        rel:['Hides behind sarcasm; true feelings lie beneath','Struggles to express gratitude, but repays through actions','Requires immense patience to reach the heart']}}
   },
   huxley:{id:'huxley',zh:'赫希黎',en:'HUXLEY',ja:'ハクスリー',arch:'seeker',fb:'♟️',pct:10,
     icon:'icons/HUXLEY.jpg',splash:'splash/HUXLEY.jpg',
@@ -400,40 +459,45 @@ const C = {
         drive:'揭开真相 / 为父亲洗清冤屈',stress:'被利用或被操控 / 真相比想象中更残酷',
         str:['洞察力首屈一指','极端条件下保持冷静','为真相可以赌上一切'],
         weak:['过度算计忘记直觉','长期伪装模糊真实的自己','信任缺失是双刃剑'],
-        rel:['极难被读懂，刻意保持多层面具','在极少数信任之人面前展露真实','不主动寻求关系，但默默保护在意的人']}}
+        rel:['极难被读懂，刻意保持多层面具','在极少数信任之人面前展露真实','不主动寻求关系，但默默保护在意的人']},
+      en:{desc:'You are a born chess player. The world is a vast board, and your gift is reading the layout before anyone makes a move.\n\nYour composure is trained second nature. But the core that drives you is deeply emotional: truth. You are a paradox — the most loyal blade and the most dangerous rebel.',
+        drive:'Unveiling the truth / Clearing your father\'s name',stress:'Being used or manipulated / Discovering a truth crueler than imagined',
+        str:['Peerless insight','Stays calm under extreme conditions','Will stake everything for the truth'],
+        weak:['Over-calculation sometimes forgets intuition','Long-term disguise blurs the real self','Lack of trust is a double-edged sword'],
+        rel:['Nearly impossible to read; maintains multiple masks','Shows true self only to the very few trusted','Does not seek relationships, but silently protects those who matter']}}
   }
 };
 
-const ARCH={seeker:{ja:'真理の探索者',zh:'真理的探索者',color:'#d4a843'},awakener:{ja:'感情の覚醒者',zh:'感情的觉醒者',color:'#14b8a6'},survivor:{ja:'荒野の生存者',zh:'荒野的生存者',color:'#ef4444'},pioneer:{ja:'冒険の先駆者',zh:'冒险的先驱者',color:'#f59e0b'},guardian:{ja:'守護の誓約者',zh:'守护的誓约者',color:'#3b82f6'}};
+const ARCH={seeker:{ja:'真理の探索者',zh:'真理的探索者',en:'Seeker of Truth',color:'#d4a843'},awakener:{ja:'感情の覚醒者',zh:'感情的觉醒者',en:'Emotional Awakener',color:'#14b8a6'},survivor:{ja:'荒野の生存者',zh:'荒野的生存者',en:'Wilderness Survivor',color:'#ef4444'},pioneer:{ja:'冒険の先駆者',zh:'冒险的先驱者',en:'Adventure Pioneer',color:'#f59e0b'},guardian:{ja:'守護の誓約者',zh:'守护的誓约者',en:'Sworn Guardian',color:'#3b82f6'}};
 
 const DIM=[
-  {id:'D1',pA:'I',pB:'E',lA_ja:'内向・真理駆動',lB_ja:'外向・情熱駆動',lA_zh:'内向·真理驱动',lB_zh:'外向·热情驱动',cA:'#d4a843',cB:'#f472b6'},
-  {id:'D2',pA:'S',pB:'N',lA_ja:'実感・観察感知',lB_ja:'直覚・深層燃焼',lA_zh:'实感·观察感知',lB_zh:'直觉·深层燃烧',cA:'#14b8a6',cB:'#ef4444'},
-  {id:'D3',pA:'T',pB:'F',lA_ja:'思考・離群独行',lB_ja:'感情・人群周旋',lA_zh:'思考·离群独行',lB_zh:'情感·人群周旋',cA:'#8b5cf6',cB:'#f59e0b'},
-  {id:'D4',pA:'J',pB:'P',lA_ja:'判断・対抗重鋳',lB_ja:'知覚・受容守護',lA_zh:'判断·对抗重铸',lB_zh:'知觉·接纳守护',cA:'#3b82f6',cB:'#10b981'}
+  {id:'D1',pA:'I',pB:'E',lA_ja:'内向・真理駆動',lB_ja:'外向・情熱駆動',lA_zh:'内向·真理驱动',lB_zh:'外向·热情驱动',lA_en:'Introverted',lB_en:'Extraverted',cA:'#d4a843',cB:'#f472b6'},
+  {id:'D2',pA:'S',pB:'N',lA_ja:'実感・観察感知',lB_ja:'直覚・深層燃焼',lA_zh:'实感·观察感知',lB_zh:'直觉·深层燃烧',lA_en:'Sensing',lB_en:'Intuitive',cA:'#14b8a6',cB:'#ef4444'},
+  {id:'D3',pA:'T',pB:'F',lA_ja:'思考・離群独行',lB_ja:'感情・人群周旋',lA_zh:'思考·离群独行',lB_zh:'情感·人群周旋',lA_en:'Thinking',lB_en:'Feeling',cA:'#8b5cf6',cB:'#f59e0b'},
+  {id:'D4',pA:'J',pB:'P',lA_ja:'判断・対抗重鋳',lB_ja:'知覚・受容守護',lA_zh:'判断·对抗重铸',lB_zh:'知觉·接纳守护',lA_en:'Judging',lB_en:'Perceiving',cA:'#3b82f6',cB:'#10b981'}
 ];
 
 const Q=[
-  {id:1,d:'D1',ja:'未記録の遺跡入口を発見した。',zh:'你发现了一处从未被记录的遗迹入口。',aJ:'まず情報を集め、リスクを分析してから入るか決める。',bJ:'すごい！すぐに入ってみよう！こんなチャンスは逃せない。',aZ:'我会先收集信息，分析风险后再决定是否进入。',bZ:'太棒了！马上进去看看！这种机会不能错过。'},
-  {id:2,d:'D1',ja:'仲間に「なぜアウェークナーになったの？」と聞かれた。',zh:'队友问你为什么要成为先觉者。',aJ:'ある問いの答えを見つけなければならないから。',bJ:'かつてない冒険だから。',aZ:'因为我需要找到某个问题的答案。',bZ:'因为这是一场前所未有的冒险。'},
-  {id:4,d:'D1',ja:'二つの任務ルート：一つは重要情報が得られそう、もう一つは刺激的だが情報価値は不明。',zh:'两条任务路线：一条可能获得重要情报，另一条更刺激但信息价值不确定。',aJ:'もちろん情報価値が高い方を選ぶ。',bJ:'刺激的な方が意外な収穫があるかも。',aZ:'当然选情报价值更高的那条。',bZ:'说不定刺激的那条反而有意外收获呢。'},
-  {id:7,d:'D1',ja:'先輩が「答えを知る必要のないこともある」と言った。',zh:'一位前辈说"有些事不需要知道答案"。',aJ:'賛成しかねる。すべての問いに答える価値がある。',bJ:'一理ある。感じることが理解より大事なこともある。',aZ:'我不同意。每个问题都值得被解答。',bZ:'也有道理，有些事感受比理解更重要。'},
-  {id:8,d:'D1',ja:'任務のどの段階が最も楽しい？',zh:'你更享受任务的哪个阶段？',aJ:'事前分析と事後振り返り。脈絡を整理する時が最も満足。',bJ:'実行の過程。全身全霊で挑む感覚が最高。',aZ:'事前分析和事后复盘——理清脉络最满足。',bZ:'执行的过程——全身心投入的感觉最棒。'},
-  {id:11,d:'D2',ja:'信頼していた人に裏切られた。',zh:'一个曾经信任的人背叛了你。',aJ:'なぜ起きたのか冷静に分析する。裏切りの動機は何か。',bJ:'怒りと苦しみが長い間、あらゆる判断に影響を及ぼす。',aZ:'我会冷静分析为什么会发生，背叛的动机是什么。',bZ:'愤怒和痛苦会在很长一段时间里影响我的每个决定。'},
-  {id:13,d:'D2',ja:'「今どんな気持ち？」と聞かれた。',zh:'有人问你"你现在是什么心情"。',aJ:'自分の感情を識別して言語化するのに少し時間が必要。',bJ:'何を感じているかはよく分かる。問題はそれをどう制御するか。',aZ:'我需要一点时间来识别和描述自己的感受。',bZ:'我很清楚自己在感受什么，问题是如何控制它。'},
-  {id:15,d:'D2',ja:'不正な出来事を目撃した。',zh:'目睹了一场不公正的事件。',aJ:'まず介入のリスクと実現可能性を判断する。',bJ:'耐えられない。結果がどうなろうと何かしなければ。',aZ:'我会先判断介入的风险和可行性。',bZ:'无法忍受。不管后果如何，我必须做点什么。'},
-  {id:17,d:'D2',ja:'言葉であなたを怒らせようとする人がいる。',zh:'有人试图用言语激怒你。',aJ:'挑発だと分かるので乗らない。',bJ:'罠だと分かっていても、湧き上がる怒りを抑えるのは難しい。',aZ:'我能意识到对方在激怒我，所以不会上当。',bZ:'即使知道是圈套，身体里的怒火还是很难压制。'},
-  {id:18,d:'D2',ja:'あなたにとって「強さ」とは……',zh:'对你来说，"强大"意味着……',aJ:'すべてを冷静に認知し、理解できること。',bJ:'傷つき尽くしても、なお立ち上がり前に進めること。',aZ:'能够清醒地认知一切、理解一切。',bZ:'即使被伤透也依然能够站起来继续前行。'},
-  {id:19,d:'D3',ja:'ソロかチームか選べる任務。',zh:'可以选择单人或组队的任务。',aJ:'ソロ。他人に合わせなくて済み、効率が良い。',bJ:'チームで！人数が多いほど心強いし、楽しいかも。',aZ:'单人行动。不用配合别人，效率更高。',bZ:'组队吧！人多力量大，而且可能更有趣。'},
-  {id:21,d:'D3',ja:'誰かが友達になりたいと近づいてきた。',zh:'有人主动想和你成为朋友。',aJ:'距離を保ちしばらく観察する。簡単には応じない。',bJ:'友達が増えるのは悪くない。拒む理由はない。',aZ:'我会保持距离观察一段时间，不轻易回应。',bZ:'交个朋友也不错，来者不拒。'},
-  {id:23,d:'D3',ja:'見知らぬ人から情報を入手する必要がある。',zh:'需要从陌生人那里获取信息。',aJ:'あまり得意ではないが、必要なら簡潔に直接聞く。',bJ:'問題ない。相手に合わせて話すのは基本スキル。',aZ:'这种事让我不太舒服，但必须的话会简短直接。',bZ:'没问题，见什么人说什么话，这是基本技能。'},
-  {id:24,d:'D3',ja:'「チームメイト」という言葉が意味するのは……',zh:'"队友"这个词对你意味着……',aJ:'同じ任務を遂行する協力者。任務が終われば関係も変わる。',bJ:'共に戦う仲間。その絆はずっと続く。',aZ:'执行同一任务的合作者，任务结束关系也随之调整。',bZ:'并肩作战的伙伴，这种羁绊会一直持续。'},
-  {id:27,d:'D3',ja:'あまり親しくない人にあなたの秘密を知られた。',zh:'你的秘密被不太熟的人意外发现了。',aJ:'非常に不安。すぐにリスクを評価しなければ。',bJ:'状況次第だが、むしろ距離を縮めるきっかけになるかも。',aZ:'这让我非常不安，需要立刻评估风险。',bZ:'看情况，也许这反而是拉近关系的契机。'},
-  {id:28,d:'D4',ja:'「あなたの運命は生まれた時から決まっている」と告げられた。',zh:'被告知"你的命运从出生就已经注定"。',aJ:'運命？この手で叩き壊す。',bJ:'運命がこの道を与えたのには理由があるのかもしれない。',aZ:'命运？我会亲手把它砸碎。',bZ:'也许命运给了我这条路是有原因的。'},
-  {id:29,d:'D4',ja:'体に不可逆的な変化が起きた。',zh:'身体发生了不可逆转的变化。',aJ:'あらゆる方法でこの変化に抗う。',bJ:'辛いが、新しい自分と共に生きることを学ぶ。',aZ:'我会想尽一切办法对抗这种变化。',bZ:'虽然痛苦，但要学会与新的自己共处。'},
-  {id:33,d:'D4',ja:'最も大切なものを失った後……',zh:'失去了最重要的东西之后……',aJ:'真相を突き止め、代償を払わせる必要がある。',bJ:'その人が残してくれた意味と共に生き続ける。',aZ:'我需要找到真相，需要有人为此付出代价。',bZ:'我要带着它留下的意义继续活下去。'},
-  {id:35,d:'D4',ja:'自分の過去をどう表現する？',zh:'你会怎样描述自己的过去？',aJ:'清算し、乗り越えなければならない相手。',bJ:'良いも悪いも含め、今の自分を作ったすべて。',aZ:'是我必须清算和超越的对手。',bZ:'是塑造了现在的我的一切，无论好坏。'},
-  {id:36,d:'D4',ja:'過去の自分に一言伝えるなら。',zh:'如果能对过去的自己说一句话。',aJ:'「強くなれ。十分に強ければ、もう何も失わない。」',bJ:'「あなたはもう十分だ。そばにいる人を守って。」',aZ:'"变强。足够强大就不会再失去任何东西。"',bZ:'"你已经够好了。保护好身边的人。"'}
+  {id:1,d:'D1',ja:'未記録の遺跡入口を発見した。',zh:'你发现了一处从未被记录的遗迹入口。',en:'You discover an uncharted ruin entrance.',aJ:'まず情報を集め、リスクを分析してから入るか決める。',bJ:'すごい！すぐに入ってみよう！こんなチャンスは逃せない。',aZ:'我会先收集信息，分析风险后再决定是否进入。',bZ:'太棒了！马上进去看看！这种机会不能错过。',aE:'Gather information and assess the risks before entering.',bE:'Amazing! Let\'s go in right now — can\'t miss this chance!'},
+  {id:2,d:'D1',ja:'仲間に「なぜアウェークナーになったの？」と聞かれた。',zh:'队友问你为什么要成为先觉者。',en:'A teammate asks why you became a Precursor.',aJ:'ある問いの答えを見つけなければならないから。',bJ:'かつてない冒険だから。',aZ:'因为我需要找到某个问题的答案。',bZ:'因为这是一场前所未有的冒险。',aE:'Because I need to find the answer to a question.',bE:'Because it\'s an adventure unlike any other.'},
+  {id:4,d:'D1',ja:'二つの任務ルート：一つは重要情報が得られそう、もう一つは刺激的だが情報価値は不明。',zh:'两条任务路线：一条可能获得重要情报，另一条更刺激但信息价值不确定。',en:'Two mission routes: one likely yields intel, the other is thrilling but uncertain.',aJ:'もちろん情報価値が高い方を選ぶ。',bJ:'刺激的な方が意外な収穫があるかも。',aZ:'当然选情报价值更高的那条。',bZ:'说不定刺激的那条反而有意外收获呢。',aE:'Obviously, the one with higher intel value.',bE:'The thrilling one might bring unexpected rewards.'},
+  {id:7,d:'D1',ja:'先輩が「答えを知る必要のないこともある」と言った。',zh:'一位前辈说"有些事不需要知道答案"。',en:'A senior tells you "some things don\'t need answers."',aJ:'賛成しかねる。すべての問いに答える価値がある。',bJ:'一理ある。感じることが理解より大事なこともある。',aZ:'我不同意。每个问题都值得被解答。',bZ:'也有道理，有些事感受比理解更重要。',aE:'I disagree. Every question deserves an answer.',bE:'Fair point. Sometimes feeling matters more than understanding.'},
+  {id:8,d:'D1',ja:'任務のどの段階が最も楽しい？',zh:'你更享受任务的哪个阶段？',en:'Which phase of a mission do you enjoy most?',aJ:'事前分析と事後振り返り。脈絡を整理する時が最も満足。',bJ:'実行の過程。全身全霊で挑む感覚が最高。',aZ:'事前分析和事后复盘——理清脉络最满足。',bZ:'执行的过程——全身心投入的感觉最棒。',aE:'Pre-analysis and debriefing — piecing it all together.',bE:'The execution — going all-in feels incredible.'},
+  {id:11,d:'D2',ja:'信頼していた人に裏切られた。',zh:'一个曾经信任的人背叛了你。',en:'Someone you trusted has betrayed you.',aJ:'なぜ起きたのか冷静に分析する。裏切りの動機は何か。',bJ:'怒りと苦しみが長い間、あらゆる判断に影響を及ぼす。',aZ:'我会冷静分析为什么会发生，背叛的动机是什么。',bZ:'愤怒和痛苦会在很长一段时间里影响我的每个决定。',aE:'I\'d calmly analyze why it happened and their motive.',bE:'The anger and pain would affect my decisions for a long time.'},
+  {id:13,d:'D2',ja:'「今どんな気持ち？」と聞かれた。',zh:'有人问你"你现在是什么心情"。',en:'Someone asks "How are you feeling right now?"',aJ:'自分の感情を識別して言語化するのに少し時間が必要。',bJ:'何を感じているかはよく分かる。問題はそれをどう制御するか。',aZ:'我需要一点时间来识别和描述自己的感受。',bZ:'我很清楚自己在感受什么，问题是如何控制它。',aE:'I need a moment to identify and articulate my feelings.',bE:'I know exactly what I feel. The question is how to control it.'},
+  {id:15,d:'D2',ja:'不正な出来事を目撃した。',zh:'目睹了一场不公正的事件。',en:'You witness an act of injustice.',aJ:'まず介入のリスクと実現可能性を判断する。',bJ:'耐えられない。結果がどうなろうと何かしなければ。',aZ:'我会先判断介入的风险和可行性。',bZ:'无法忍受。不管后果如何，我必须做点什么。',aE:'First assess the risks and feasibility of getting involved.',bE:'Unbearable. I must do something regardless of consequences.'},
+  {id:17,d:'D2',ja:'言葉であなたを怒らせようとする人がいる。',zh:'有人试图用言语激怒你。',en:'Someone is trying to provoke you with words.',aJ:'挑発だと分かるので乗らない。',bJ:'罠だと分かっていても、湧き上がる怒りを抑えるのは難しい。',aZ:'我能意识到对方在激怒我，所以不会上当。',bZ:'即使知道是圈套，身体里的怒火还是很难压制。',aE:'I can tell it\'s provocation, so I won\'t take the bait.',bE:'Even knowing it\'s a trap, the rising anger is hard to suppress.'},
+  {id:18,d:'D2',ja:'あなたにとって「強さ」とは……',zh:'对你来说，"强大"意味着……',en:'To you, "strength" means...',aJ:'すべてを冷静に認知し、理解できること。',bJ:'傷つき尽くしても、なお立ち上がり前に進めること。',aZ:'能够清醒地认知一切、理解一切。',bZ:'即使被伤透也依然能够站起来继续前行。',aE:'Being able to perceive and understand everything clearly.',bE:'Being able to stand up and move forward even after being broken.'},
+  {id:19,d:'D3',ja:'ソロかチームか選べる任務。',zh:'可以选择单人或组队的任务。',en:'A mission where you can choose solo or team.',aJ:'ソロ。他人に合わせなくて済み、効率が良い。',bJ:'チームで！人数が多いほど心強いし、楽しいかも。',aZ:'单人行动。不用配合别人，效率更高。',bZ:'组队吧！人多力量大，而且可能更有趣。',aE:'Solo. No need to coordinate — more efficient.',bE:'Team! More people means more strength and more fun.'},
+  {id:21,d:'D3',ja:'誰かが友達になりたいと近づいてきた。',zh:'有人主动想和你成为朋友。',en:'Someone approaches wanting to be your friend.',aJ:'距離を保ちしばらく観察する。簡単には応じない。',bJ:'友達が増えるのは悪くない。拒む理由はない。',aZ:'我会保持距离观察一段时间，不轻易回应。',bZ:'交个朋友也不错，来者不拒。',aE:'Keep my distance and observe for a while. I don\'t warm up easily.',bE:'More friends is fine. No reason to refuse.'},
+  {id:23,d:'D3',ja:'見知らぬ人から情報を入手する必要がある。',zh:'需要从陌生人那里获取信息。',en:'You need to get information from a stranger.',aJ:'あまり得意ではないが、必要なら簡潔に直接聞く。',bJ:'問題ない。相手に合わせて話すのは基本スキル。',aZ:'这种事让我不太舒服，但必须的话会简短直接。',bZ:'没问题，见什么人说什么话，这是基本技能。',aE:'Not my forte, but I\'ll be brief and direct if needed.',bE:'No problem. Adapting to any conversational partner is a basic skill.'},
+  {id:24,d:'D3',ja:'「チームメイト」という言葉が意味するのは……',zh:'"队友"这个词对你意味着……',en:'The word "teammate" means to you...',aJ:'同じ任務を遂行する協力者。任務が終われば関係も変わる。',bJ:'共に戦う仲間。その絆はずっと続く。',aZ:'执行同一任务的合作者，任务结束关系也随之调整。',bZ:'并肩作战的伙伴，这种羁绊会一直持续。',aE:'Collaborators for a shared mission. The bond adjusts when it ends.',bE:'Comrades who fight side by side. That bond lasts forever.'},
+  {id:27,d:'D3',ja:'あまり親しくない人にあなたの秘密を知られた。',zh:'你的秘密被不太熟的人意外发现了。',en:'An acquaintance accidentally discovers your secret.',aJ:'非常に不安。すぐにリスクを評価しなければ。',bJ:'状況次第だが、むしろ距離を縮めるきっかけになるかも。',aZ:'这让我非常不安，需要立刻评估风险。',bZ:'看情况，也许这反而是拉近关系的契机。',aE:'Very unsettling. I need to assess the risk immediately.',bE:'Depends on the situation — it might even bring us closer.'},
+  {id:28,d:'D4',ja:'「あなたの運命は生まれた時から決まっている」と告げられた。',zh:'被告知"你的命运从出生就已经注定"。',en:'You are told "Your fate was sealed at birth."',aJ:'運命？この手で叩き壊す。',bJ:'運命がこの道を与えたのには理由があるのかもしれない。',aZ:'命运？我会亲手把它砸碎。',bZ:'也许命运给了我这条路是有原因的。',aE:'Fate? I\'ll shatter it with my own hands.',bE:'Perhaps fate gave me this path for a reason.'},
+  {id:29,d:'D4',ja:'体に不可逆的な変化が起きた。',zh:'身体发生了不可逆转的变化。',en:'Your body undergoes an irreversible change.',aJ:'あらゆる方法でこの変化に抗う。',bJ:'辛いが、新しい自分と共に生きることを学ぶ。',aZ:'我会想尽一切办法对抗这种变化。',bZ:'虽然痛苦，但要学会与新的自己共处。',aE:'I\'ll fight this change by any means necessary.',bE:'Painful, but I\'ll learn to live with the new me.'},
+  {id:33,d:'D4',ja:'最も大切なものを失った後……',zh:'失去了最重要的东西之后……',en:'After losing what mattered most...',aJ:'真相を突き止め、代償を払わせる必要がある。',bJ:'その人が残してくれた意味と共に生き続ける。',aZ:'我需要找到真相，需要有人为此付出代价。',bZ:'我要带着它留下的意义继续活下去。',aE:'I need to uncover the truth. Someone must pay.',bE:'I\'ll carry the meaning they left behind and keep living.'},
+  {id:35,d:'D4',ja:'自分の過去をどう表現する？',zh:'你会怎样描述自己的过去？',en:'How would you describe your past?',aJ:'清算し、乗り越えなければならない相手。',bJ:'良いも悪いも含め、今の自分を作ったすべて。',aZ:'是我必须清算和超越的对手。',bZ:'是塑造了现在的我的一切，无论好坏。',aE:'An opponent I must settle accounts with and overcome.',bE:'Everything — good and bad — that shaped who I am today.'},
+  {id:36,d:'D4',ja:'過去の自分に一言伝えるなら。',zh:'如果能对过去的自己说一句话。',en:'If you could tell your past self one thing.',aJ:'「強くなれ。十分に強ければ、もう何も失わない。」',bJ:'「あなたはもう十分だ。そばにいる人を守って。」',aZ:'"变强。足够强大就不会再失去任何东西。"',bZ:'"你已经够好了。保护好身边的人。"',aE:'"Get stronger. Strong enough and you\'ll never lose anything again."',bE:'"You are enough. Protect the people by your side."'}
 ];
 const QORDER=[2,19,11,28,4,23,15,35,1,21,13,29,8,24,17,33,7,27,18,36];
 
@@ -467,11 +531,11 @@ function renderQ(){
   document.getElementById('q-prog').textContent=`${curQ+1} / ${total}`;
   document.getElementById('prog-fill').style.width=`${(curQ/total)*100}%`;
   document.getElementById('btn-prev').style.display=curQ>0?'inline-block':'none';
-  const scenario=L==='ja'?q.ja:q.zh, oA=L==='ja'?q.aJ:q.aZ, oB=L==='ja'?q.bJ:q.bZ;
-  const lA=L==='ja'?dm.lA_ja:dm.lA_zh, lB=L==='ja'?dm.lB_ja:dm.lB_zh;
+  const scenario=L==='ja'?q.ja:L==='zh'?q.zh:q.en, oA=L==='ja'?q.aJ:L==='zh'?q.aZ:q.aE, oB=L==='ja'?q.bJ:L==='zh'?q.bZ:q.bE;
+  const lA=L==='ja'?dm.lA_ja:L==='zh'?dm.lA_zh:dm.lA_en, lB=L==='ja'?dm.lB_ja:L==='zh'?dm.lB_zh:dm.lB_en;
   const prev=ans[qId];
-  const agreeA = L==='ja'?'こちらに近い':'更认同这个';
-  const agreeB = L==='ja'?'こちらに近い':'更认同这个';
+  const agreeA = L==='ja'?'こちらに近い':L==='zh'?'更认同这个':'Closer to this';
+  const agreeB = L==='ja'?'こちらに近い':L==='zh'?'更认同这个':'Closer to this';
   document.getElementById('q-area').innerHTML=`
     <div class="question-card">
       <div class="question-scenario">${scenario}</div>
@@ -575,8 +639,8 @@ function showResult(ch,ds){
       <div class="dim-label-r" style="color:${d.cB}">${d.pB}<br><span style="font-weight:400;font-size:10px">${lB}</span></div>
     </div>`;
   }).join('');
-  const name=L==='ja'?ch.ja:ch.zh;
-  const quote=L==='ja'?ch.quote_ja:ch.quote_zh;
+  const name=L==='ja'?ch.ja:L==='zh'?ch.zh:ch.en;
+  const quote=L==='ja'?ch.quote_ja:L==='zh'?ch.quote_zh:ch.quote_ja;
   const archName=ar[L];
   document.getElementById('r-content').innerHTML=`
     <div class="result-hero">
@@ -585,7 +649,7 @@ function showResult(ch,ds){
       <div class="result-char-name">${name}</div>
       <div class="result-char-en">${ch.en}</div>
       <div class="result-code">${code}</div>
-      <div class="result-pct">${L==='ja'?'約'+ch.pct+'%の人があなたと同じタイプ':'约'+ch.pct+'%的人与你是同一类型'}</div>
+      <div class="result-pct">${L==='ja'?'約'+ch.pct+'%の人があなたと同じタイプ':L==='zh'?'约'+ch.pct+'%的人与你是同一类型':'About '+ch.pct+'% of people share your type'}</div>
       <div class="result-quote">"${quote}"</div>
     </div>
     <div class="result-splash" id="r-splash">${splashHTML(ch)}</div>
@@ -607,7 +671,7 @@ function showResult(ch,ds){
 }
 function copyR(id){
   const ch=C[id],L=LANG,ar=ARCH[ch.arch];
-  const name=L==='ja'?ch.ja:ch.zh;
+  const name=L==='ja'?ch.ja:L==='zh'?ch.zh:ch.en;
   const txt=t('copy_tpl').replace('{arch}',ar[L]).replace('{name}',name).replace('{en}',ch.en).replace('{code}',document.querySelector('.result-code').textContent);
   navigator.clipboard.writeText(txt).then(()=>showToast(t('copied'))).catch(()=>showToast(t('copy_fail')));
 }
@@ -617,8 +681,8 @@ function showToast(m){const el=document.getElementById('toast');el.textContent=m
 function genShareCard(){
   const {ch,ds}=window._lastResult;
   const L=LANG, ar=ARCH[ch.arch];
-  const name=L==='ja'?ch.ja:ch.zh;
-  const quote=L==='ja'?ch.quote_ja:ch.quote_zh;
+  const name=L==='ja'?ch.ja:L==='zh'?ch.zh:ch.en;
+  const quote=L==='ja'?ch.quote_ja:L==='zh'?ch.quote_zh:ch.quote_ja;
   const archName=ar[L];
   const code=DIM.map(d=>ds[d.id]<=50?d.pA:d.pB).join(' - ');
 
@@ -704,7 +768,7 @@ function drawCardContent(ctx, W, H, ch, ds, name, quote, archName, code, ar, cvs
   // Percentage
   ctx.fillStyle='#5a5a72';
   ctx.font='12px sans-serif';
-  const pctText=L==='ja'?'約'+ch.pct+'%の人があなたと同じタイプ':'约'+ch.pct+'%的人与你是同一类型';
+  const pctText=L==='ja'?'約'+ch.pct+'%の人があなたと同じタイプ':L==='zh'?'约'+ch.pct+'%的人与你是同一类型':'About '+ch.pct+'% share your type';
   ctx.fillText(pctText, W/2, 308);
 
   // Quote
@@ -832,17 +896,17 @@ function showCardModal(cvs){
 
   const tip=document.createElement('p');
   tip.style.cssText='font-size:13px;color:#5a5a72;margin-bottom:12px';
-  tip.textContent=LANG==='ja'?'長押しまたは右クリックで画像を保存':'长按或右键保存图片';
+  tip.textContent=LANG==='ja'?'長押しまたは右クリックで画像を保存':LANG==='zh'?'长按或右键保存图片':'Long press or right-click to save';
 
   const dlBtn=document.createElement('button');
-  dlBtn.textContent=LANG==='ja'?'📥 画像を保存':'📥 保存图片';
+  dlBtn.textContent=LANG==='ja'?'📥 画像を保存':LANG==='zh'?'📥 保存图片':'📥 Save Image';
   dlBtn.style.cssText='padding:12px 32px;background:linear-gradient(135deg,#b8860b,#8B6914);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;width:100%';
   dlBtn.onclick=function(){
     const a=document.createElement('a');
     a.download='precursor-type-'+window._lastResult.ch.en+'.png';
     a.href=cvs.toDataURL('image/png');
     a.click();
-    showToast(LANG==='ja'?'保存しました！':'已保存！');
+    showToast(LANG==='ja'?'保存しました！':LANG==='zh'?'已保存！':'Saved!');
   };
 
   const closeBtn=document.createElement('button');
