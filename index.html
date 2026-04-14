@@ -193,7 +193,7 @@ const I18N = {
     sec_dim: '📊 次元分析', sec_personality: '🔍 性格分析',
     sec_drive: '⚡ 駆動力とプレッシャー', sec_str: '✨ 強みと弱み', sec_rel: '💫 関係スタイル',
     drive_label: '駆動力', stress_label: 'プレッシャー',
-    copy: '📋 結果をコピー', retry: '🔄 もう一度',
+    copy: '📋 結果をコピー', share_card: 'シェア画像', retry: '🔄 もう一度',
     copied: 'コピーしました！', copy_fail: 'コピーに失敗',
     copy_tpl: '【先覚者タイプ診断】\n{arch}\n{name} / {en}\nタイプ: {code}\n\n▶ 診断はこちら'
   },
@@ -205,7 +205,7 @@ const I18N = {
     sec_dim: '📊 维度分析', sec_personality: '🔍 性格解析',
     sec_drive: '⚡ 驱动力与压力源', sec_str: '✨ 优势与盲点', sec_rel: '💫 关系风格',
     drive_label: '驱动力', stress_label: '压力源',
-    copy: '📋 复制结果', retry: '🔄 再测一次',
+    copy: '📋 复制结果', share_card: '分享卡片', retry: '🔄 再测一次',
     copied: '已复制！', copy_fail: '复制失败',
     copy_tpl: '【先觉者人格测试】\n{arch}\n{name} / {en}\n类型: {code}\n\n▶ 来测测你是谁'
   }
@@ -552,6 +552,7 @@ function calc(){
 
 // ===== RESULT =====
 function showResult(ch,ds){
+  window._lastResult={ch,ds};
   const L=LANG,ar=ARCH[ch.arch],a=ch.a[L];
   document.getElementById('prog-fill').style.width='100%';
   const code=DIM.map(d=>ds[d.id]<=50?d.pA[0]:d.pB[0]).join(' - ');
@@ -593,6 +594,7 @@ function showResult(ch,ds){
     <div class="result-section"><h3>${t('sec_rel')}</h3><div class="tags">${a.rel.map(r=>`<span class="tag tag-r">${r}</span>`).join('')}</div></div>
     <div class="result-actions">
       <button class="btn-secondary" onclick="copyR('${ch.id}')">${t('copy')}</button>
+      <button class="btn-secondary" onclick="genShareCard()">🖼️ ${t('share_card')}</button>
       <button class="btn-primary" style="flex:1;min-width:130px" onclick="startQuiz()">${t('retry')}</button>
     </div>
     <div style="height:40px"></div>`;
@@ -608,6 +610,242 @@ function copyR(id){
   navigator.clipboard.writeText(txt).then(()=>showToast(t('copied'))).catch(()=>showToast(t('copy_fail')));
 }
 function showToast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2000);}
+
+// ===== SHARE CARD =====
+function genShareCard(){
+  const {ch,ds}=window._lastResult;
+  const L=LANG, ar=ARCH[ch.arch];
+  const name=L==='ja'?ch.ja:ch.zh;
+  const quote=L==='ja'?ch.quote_ja:ch.quote_zh;
+  const archName=ar[L];
+  const code=DIM.map(d=>ds[d.id]<=50?d.pA:d.pB).join(' - ');
+
+  const W=600, H=820;
+  const cvs=document.createElement('canvas');
+  cvs.width=W; cvs.height=H;
+  const ctx=cvs.getContext('2d');
+
+  // Background
+  ctx.fillStyle='#f5f0eb';
+  ctx.fillRect(0,0,W,H);
+
+  // Card area
+  const m=24;
+  roundRect(ctx, m, m, W-m*2, H-m*2, 20, 'rgba(255,255,255,0.9)', 'rgba(0,0,0,0.06)');
+
+  // Header line
+  ctx.fillStyle=ar.color;
+  ctx.fillRect(m, m, W-m*2, 4);
+
+  // Archetype
+  ctx.fillStyle=ar.color;
+  ctx.font='600 13px sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(archName, W/2, 72);
+
+  // Load icon and draw
+  const icon=new Image();
+  icon.crossOrigin='anonymous';
+  icon.onload=function(){
+    // Circle clip for icon
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(W/2, 148, 50, 0, Math.PI*2);
+    ctx.clip();
+    ctx.drawImage(icon, W/2-50, 98, 100, 100);
+    ctx.restore();
+    // Icon border
+    ctx.beginPath();
+    ctx.arc(W/2, 148, 51, 0, Math.PI*2);
+    ctx.strokeStyle=ar.color;
+    ctx.lineWidth=3;
+    ctx.stroke();
+
+    drawCardContent(ctx, W, H, ch, ds, name, quote, archName, code, ar, cvs);
+  };
+  icon.onerror=function(){
+    // Fallback: draw emoji
+    ctx.font='48px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText(ch.fb, W/2, 162);
+    drawCardContent(ctx, W, H, ch, ds, name, quote, archName, code, ar, cvs);
+  };
+  icon.src=ch.icon;
+}
+
+function drawCardContent(ctx, W, H, ch, ds, name, quote, archName, code, ar, cvs){
+  const L=LANG;
+  // Character name
+  ctx.fillStyle='#1a1a2e';
+  ctx.font='bold 28px sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(name, W/2, 228);
+
+  // EN name
+  ctx.fillStyle='#5a5a72';
+  ctx.font='500 14px sans-serif';
+  ctx.fillText(ch.en, W/2, 250);
+
+  // Code box
+  ctx.font='bold 16px monospace';
+  ctx.fillStyle=ar.color;
+  const codeW=ctx.measureText(code).width+32;
+  roundRect(ctx, (W-codeW)/2, 264, codeW, 32, 6, ar.color+'15', ar.color+'40');
+  ctx.fillStyle=ar.color;
+  ctx.fillText(code, W/2, 285);
+
+  // Quote
+  ctx.fillStyle='#5a5a72';
+  ctx.font='italic 12px sans-serif';
+  const qLines=wrapText(ctx, '"'+quote+'"', W-100);
+  let qY=318;
+  qLines.forEach(line=>{
+    ctx.fillText(line, W/2, qY);
+    qY+=18;
+  });
+
+  // Dimension bars
+  let barY=qY+20;
+  ctx.textAlign='left';
+  DIM.forEach(d=>{
+    const pctB=ds[d.id], pctA=100-pctB;
+    const dominant=pctA>=pctB;
+    const dpct=dominant?pctA:pctB;
+    const dcol=dominant?d.cA:d.cB;
+    const lA=L==='ja'?d.lA_ja:d.lA_zh;
+    const lB=L==='ja'?d.lB_ja:d.lB_zh;
+
+    // Labels
+    ctx.font='600 11px sans-serif';
+    ctx.fillStyle=d.cA;
+    ctx.textAlign='left';
+    ctx.fillText(d.pA, 48, barY);
+    ctx.font='400 9px sans-serif';
+    ctx.fillText(lA.split('・')[1]||lA.split('·')[1]||lA, 48, barY+12);
+
+    ctx.font='600 11px sans-serif';
+    ctx.fillStyle=d.cB;
+    ctx.textAlign='right';
+    ctx.fillText(d.pB, W-48, barY);
+    ctx.font='400 9px sans-serif';
+    ctx.fillText(lB.split('・')[1]||lB.split('·')[1]||lB, W-48, barY+12);
+
+    // Bar background
+    const bx=100, bw=W-200, by=barY-2, bh=8;
+    ctx.fillStyle='rgba(0,0,0,0.06)';
+    roundRectFill(ctx, bx, by, bw, bh, 4);
+
+    // Bar fill
+    const wA=Math.max(0,(pctA-50)*2);
+    const wB=Math.max(0,(pctB-50)*2);
+    if(wA>0){
+      ctx.fillStyle=d.cA;
+      roundRectFill(ctx, bx+bw/2-wA/100*bw/2, by, wA/100*bw/2, bh, 4);
+    }
+    if(wB>0){
+      ctx.fillStyle=d.cB;
+      roundRectFill(ctx, bx+bw/2, by, wB/100*bw/2, bh, 4);
+    }
+
+    // Percentage
+    ctx.font='600 11px sans-serif';
+    ctx.fillStyle=dcol;
+    ctx.textAlign='center';
+    ctx.fillText(dpct+'%', W/2, barY+12);
+
+    barY+=36;
+  });
+
+  // Footer
+  ctx.fillStyle='#aaa';
+  ctx.font='11px sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('Precursor Type Indicator | himayo951852-bot.github.io/GRMBTI', W/2, H-40);
+
+  // Show modal
+  showCardModal(cvs);
+}
+
+function wrapText(ctx, text, maxW){
+  const lines=[];
+  let line='';
+  for(let i=0;i<text.length;i++){
+    const test=line+text[i];
+    if(ctx.measureText(test).width>maxW && line.length>0){
+      lines.push(line);
+      line=text[i];
+    } else {
+      line=test;
+    }
+  }
+  if(line) lines.push(line);
+  return lines.length>3?lines.slice(0,3):lines;
+}
+
+function roundRect(ctx,x,y,w,h,r,fill,stroke){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke();}
+}
+function roundRectFill(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+  ctx.fill();
+}
+
+function showCardModal(cvs){
+  // Remove old modal if exists
+  const old=document.getElementById('share-modal');
+  if(old) old.remove();
+
+  const modal=document.createElement('div');
+  modal.id='share-modal';
+  modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)';
+  modal.onclick=function(e){if(e.target===modal)modal.remove();};
+
+  const wrap=document.createElement('div');
+  wrap.style.cssText='background:#fff;border-radius:16px;padding:20px;max-width:360px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.2)';
+
+  const img=document.createElement('img');
+  img.src=cvs.toDataURL('image/png');
+  img.style.cssText='width:100%;border-radius:8px;margin-bottom:16px';
+
+  const tip=document.createElement('p');
+  tip.style.cssText='font-size:13px;color:#5a5a72;margin-bottom:12px';
+  tip.textContent=LANG==='ja'?'長押しまたは右クリックで画像を保存':'长按或右键保存图片';
+
+  const dlBtn=document.createElement('button');
+  dlBtn.textContent=LANG==='ja'?'📥 画像を保存':'📥 保存图片';
+  dlBtn.style.cssText='padding:12px 32px;background:linear-gradient(135deg,#b8860b,#8B6914);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;width:100%';
+  dlBtn.onclick=function(){
+    const a=document.createElement('a');
+    a.download='precursor-type-'+window._lastResult.ch.en+'.png';
+    a.href=cvs.toDataURL('image/png');
+    a.click();
+    showToast(LANG==='ja'?'保存しました！':'已保存！');
+  };
+
+  const closeBtn=document.createElement('button');
+  closeBtn.textContent='✕';
+  closeBtn.style.cssText='position:absolute;top:12px;right:12px;background:none;border:none;font-size:20px;color:#999;cursor:pointer;padding:8px';
+  closeBtn.onclick=function(){modal.remove();};
+
+  wrap.style.position='relative';
+  wrap.appendChild(closeBtn);
+  wrap.appendChild(img);
+  wrap.appendChild(tip);
+  wrap.appendChild(dlBtn);
+  modal.appendChild(wrap);
+  document.body.appendChild(modal);
+}
+
 init();
 </script>
 </body>
