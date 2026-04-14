@@ -647,16 +647,21 @@ function genShareCard(){
   const icon=new Image();
   icon.crossOrigin='anonymous';
   icon.onload=function(){
-    // Circle clip for icon
+    // Draw icon with circle clip - larger size for better display
+    const cx=W/2, cy=148, radius=52;
     ctx.save();
     ctx.beginPath();
-    ctx.arc(W/2, 148, 50, 0, Math.PI*2);
+    ctx.arc(cx, cy, radius, 0, Math.PI*2);
     ctx.clip();
-    ctx.drawImage(icon, W/2-50, 98, 100, 100);
+    // Calculate cover-fit: fill the circle completely
+    const iw=icon.naturalWidth, ih=icon.naturalHeight;
+    const scale=Math.max(radius*2/iw, radius*2/ih);
+    const dw=iw*scale, dh=ih*scale;
+    ctx.drawImage(icon, cx-dw/2, cy-dh/2, dw, dh);
     ctx.restore();
-    // Icon border
+    // Circle border
     ctx.beginPath();
-    ctx.arc(W/2, 148, 51, 0, Math.PI*2);
+    ctx.arc(cx, cy, radius+1.5, 0, Math.PI*2);
     ctx.strokeStyle=ar.color;
     ctx.lineWidth=3;
     ctx.stroke();
