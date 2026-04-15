@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>アウェークナータイプ診断 | Precursor Type Indicator</title>
+<title>アウェークナータイプ診断 | Awakener Type Indicator</title>
 <style>
 :root {
   --bg-primary: #f5f0eb;
@@ -157,7 +157,7 @@ body::after {
 <div class="container">
   <div id="page-home" class="page active">
     <div class="home-hero">
-      <div class="home-logo">PRECURSOR TYPE INDICATOR</div>
+      <div class="home-logo">AWAKENER TYPE INDICATOR</div>
       <h1 class="home-title" id="home-title"></h1>
       <p class="home-subtitle" id="home-subtitle"></p>
       <div class="home-stats">
@@ -168,7 +168,7 @@ body::after {
       <button class="btn-primary" id="btn-start" onclick="startQuiz()"></button>
       <div class="home-chars" id="home-chars"></div>
     </div>
-    <div class="home-footer">Precursor Type Indicator v1.0</div>
+    <div class="home-footer">Awakener Type Indicator v1.0</div>
   </div>
   <div id="page-quiz" class="page">
     <div class="quiz-header">
@@ -212,8 +212,8 @@ const I18N = {
     copy_tpl: '【先觉者人格测试】\n{arch}\n{name} / {en}\n类型: {code}\n\n▶ 来测测你是谁'
   },
   en: {
-    title: 'Precursor Type Indicator',
-    subtitle: 'Answer 20 questions to discover which Precursor persona lies within you.\nWhich Awakener are you closest to?',
+    title: 'Awakener Type Indicator',
+    subtitle: 'Answer 20 questions to discover which Awakener persona lies within you.\nWhich Awakener are you closest to?',
     stat_q: 'Questions', stat_c: 'Characters', stat_d: 'Dimensions',
     start: 'Start Quiz', back: '← Back', prev_q: 'Previous',
     sec_dim: '📊 Dimension Analysis', sec_personality: '🔍 Personality Profile',
@@ -221,7 +221,7 @@ const I18N = {
     drive_label: 'Drives', stress_label: 'Pressure',
     copy: '📋 Copy Result', share_card: 'Share Card', retry: '🔄 Try Again',
     copied: 'Copied!', copy_fail: 'Copy failed',
-    copy_tpl: '【Precursor Type Indicator】\n{arch}\n{name} / {en}\nType: {code}\n\n▶ Take the quiz'
+    copy_tpl: '【Awakener Type Indicator】\n{arch}\n{name} / {en}\nType: {code}\n\n▶ Take the quiz'
   }
 };
 function t(k){ return I18N[LANG][k]||k; }
@@ -236,7 +236,7 @@ function applyI18N(){
   document.getElementById('home-subtitle').textContent=t('subtitle');
   document.getElementById('btn-start').textContent=t('start');
   document.querySelectorAll('[data-i]').forEach(el=>{ el.textContent=t(el.dataset.i); });
-  document.title = t('title') + ' | Precursor Type Indicator';
+  document.title = t('title') + ' | Awakener Type Indicator';
 }
 
 // ===== CHARACTER DATA =====
@@ -479,7 +479,7 @@ const DIM=[
 
 const Q=[
   {id:1,d:'D1',ja:'未記録の遺跡入口を発見した。',zh:'你发现了一处从未被记录的遗迹入口。',en:'You discover an uncharted ruin entrance.',aJ:'まず情報を集め、リスクを分析してから入るか決める。',bJ:'すごい！すぐに入ってみよう！こんなチャンスは逃せない。',aZ:'我会先收集信息，分析风险后再决定是否进入。',bZ:'太棒了！马上进去看看！这种机会不能错过。',aE:'Gather information and assess the risks before entering.',bE:'Amazing! Let\'s go in right now — can\'t miss this chance!'},
-  {id:2,d:'D1',ja:'仲間に「なぜアウェークナーになったの？」と聞かれた。',zh:'队友问你为什么要成为先觉者。',en:'A teammate asks why you became a Precursor.',aJ:'ある問いの答えを見つけなければならないから。',bJ:'かつてない冒険だから。',aZ:'因为我需要找到某个问题的答案。',bZ:'因为这是一场前所未有的冒险。',aE:'Because I need to find the answer to a question.',bE:'Because it\'s an adventure unlike any other.'},
+  {id:2,d:'D1',ja:'仲間に「なぜアウェークナーになったの？」と聞かれた。',zh:'队友问你为什么要成为先觉者。',en:'A teammate asks why you became an Awakener.',aJ:'ある問いの答えを見つけなければならないから。',bJ:'かつてない冒険だから。',aZ:'因为我需要找到某个问题的答案。',bZ:'因为这是一场前所未有的冒险。',aE:'Because I need to find the answer to a question.',bE:'Because it\'s an adventure unlike any other.'},
   {id:4,d:'D1',ja:'二つの任務ルート：一つは重要情報が得られそう、もう一つは刺激的だが情報価値は不明。',zh:'两条任务路线：一条可能获得重要情报，另一条更刺激但信息价值不确定。',en:'Two mission routes: one likely yields intel, the other is thrilling but uncertain.',aJ:'もちろん情報価値が高い方を選ぶ。',bJ:'刺激的な方が意外な収穫があるかも。',aZ:'当然选情报价值更高的那条。',bZ:'说不定刺激的那条反而有意外收获呢。',aE:'Obviously, the one with higher intel value.',bE:'The thrilling one might bring unexpected rewards.'},
   {id:7,d:'D1',ja:'先輩が「答えを知る必要のないこともある」と言った。',zh:'一位前辈说"有些事不需要知道答案"。',en:'A senior tells you "some things don\'t need answers."',aJ:'賛成しかねる。すべての問いに答える価値がある。',bJ:'一理ある。感じることが理解より大事なこともある。',aZ:'我不同意。每个问题都值得被解答。',bZ:'也有道理，有些事感受比理解更重要。',aE:'I disagree. Every question deserves an answer.',bE:'Fair point. Sometimes feeling matters more than understanding.'},
   {id:8,d:'D1',ja:'任務のどの段階が最も楽しい？',zh:'你更享受任务的哪个阶段？',en:'Which phase of a mission do you enjoy most?',aJ:'事前分析と事後振り返り。脈絡を整理する時が最も満足。',bJ:'実行の過程。全身全霊で挑む感覚が最高。',aZ:'事前分析和事后复盘——理清脉络最满足。',bZ:'执行的过程——全身心投入的感觉最棒。',aE:'Pre-analysis and debriefing — piecing it all together.',bE:'The execution — going all-in feels incredible.'},
@@ -837,7 +837,7 @@ function drawCardContent(ctx, W, H, ch, ds, name, quote, archName, code, ar, cvs
   ctx.fillStyle='#aaa';
   ctx.font='11px sans-serif';
   ctx.textAlign='center';
-  ctx.fillText('Precursor Type Indicator | himayo951852-bot.github.io/GRMBTI', W/2, H-40);
+  ctx.fillText('Awakener Type Indicator | himayo951852-bot.github.io/GRMBTI', W/2, H-40);
 
   // Show modal
   showCardModal(cvs);
@@ -903,7 +903,7 @@ function showCardModal(cvs){
   dlBtn.style.cssText='padding:12px 32px;background:linear-gradient(135deg,#b8860b,#8B6914);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;width:100%';
   dlBtn.onclick=function(){
     const a=document.createElement('a');
-    a.download='precursor-type-'+window._lastResult.ch.en+'.png';
+    a.download='awakener-type-'+window._lastResult.ch.en+'.png';
     a.href=cvs.toDataURL('image/png');
     a.click();
     showToast(LANG==='ja'?'保存しました！':LANG==='zh'?'已保存！':'Saved!');
